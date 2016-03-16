@@ -165,7 +165,7 @@ public class UserModel {
 	public static boolean unfollow (int followerID , int followedID) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "delete from follow where follower = ? and followed = ?";
+			String sql = "delete from follows where follower = ? and followed = ?";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, followerID);
