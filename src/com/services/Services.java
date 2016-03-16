@@ -68,6 +68,7 @@ public class Services {
 		return json.toJSONString();
 	}
 
+
 	
 	
 	@POST
@@ -80,8 +81,19 @@ public class Services {
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 	}
-	
-	
+
+	@POST
+	@Path("/unfollow")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String unfollow(@FormParam("followerID") String followerID, @FormParam("followedID") String followedID) {
+		Boolean status = UserModel.unfollow(Integer.parseInt(followerID), Integer.parseInt(followedID)); 
+
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+
+
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)
