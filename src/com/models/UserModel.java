@@ -69,7 +69,6 @@ public class UserModel {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "Insert into users (`name`,`email`,`password`) VALUES  (?,?,?)";
-			// System.out.println(sql);
 
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -90,7 +89,7 @@ public class UserModel {
 			}
 			return null;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return null;
@@ -119,7 +118,7 @@ public class UserModel {
 			}
 			return null;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return null;
@@ -141,5 +140,26 @@ public class UserModel {
 		}
 		return false;
 	}
+	
+	public static boolean follow(Integer followerID, Integer followedID){
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Insert into follows (`follower`, `followed`) VALUES (?,?)";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, followerID);
+			stmt.setInt(2, followedID);
+
+			stmt.executeUpdate();
+			return true;
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+		
+	}
+	
+
 
 }

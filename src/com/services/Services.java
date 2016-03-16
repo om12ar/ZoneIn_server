@@ -23,14 +23,7 @@ import com.models.UserModel;
 @Path("/")
 public class Services {
 
-	/*
-	 * @GET
-	 * 
-	 * @Path("/signup")
-	 * 
-	 * @Produces(MediaType.TEXT_HTML) public Response signUp(){ return
-	 * Response.ok(new Viewable("/Signup.jsp")).build(); }
-	 */
+
 
 	@POST
 	@Path("/signup")
@@ -75,12 +68,30 @@ public class Services {
 		return json.toJSONString();
 	}
 
+	
+	
+	@POST
+	@Path("/follow")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String follow(@FormParam("followerID") String followerID, @FormParam("followedID") String followedID){
+		
+		Boolean status = UserModel.follow(Integer.parseInt(followerID), Integer.parseInt(followedID));
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getJson() {
 		return "Hello after editing";
-		// Connection URL:
-		// mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
+
 	}
+	
+
+	
+
 }
+
