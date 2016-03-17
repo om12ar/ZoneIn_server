@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.mysql.jdbc.Statement;
 
@@ -193,7 +194,7 @@ public class UserModel {
 	public static UserModel getUserById(int id) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from user where `id` = ? ";
+			String sql = "Select * from users where `id` = ? ";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, id);
@@ -202,10 +203,10 @@ public class UserModel {
 				UserModel user = new UserModel();
 				user.id = rs.getInt(1);
 				user.email = rs.getString("email");
-				user.pass = rs.getString("pass");
+				user.pass = rs.getString("password");
 				user.name = rs.getString("name");
 				user.lat = rs.getDouble("lat");
-				user.lon = rs.getDouble("lon");
+				user.lon = rs.getDouble("long");
 				return user;
 			}
 			return null;
@@ -260,4 +261,36 @@ public class UserModel {
 		return null;
 	}
 
+
+	public static ArrayList<UserModel> getFollowersIDs(Integer id)
+	{
+		try {
+			Connection conn=DBConnection.getActiveConnection();
+			String sql="SELECT * FROM `follows` where `followed` = ?" ;
+			PreparedStatement stmt;
+			stmt=conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			ArrayList<UserModel> followedBy= new ArrayList<>();
+					
+			while (rs.next()) {
+				
+				UserModel temp =  getUserById(rs.getInt(1)) ;
+				followedBy.add(temp);
+				System.out.println("UserModel.getFollowersIDs()" + temp.toString());
+				
+			}
+			return followedBy;
+		}
+		
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
+
+	
 }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.mvc.Viewable;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.models.DBConnection;
@@ -103,7 +105,49 @@ public class Services {
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 	}
+	
+	@POST 
+	@Path("/getFollowers")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getFollowers(@FormParam("userID")Integer id)
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<UserModel> followers = new ArrayList<>(UserModel.getFollowersIDs(id)) ;
+		if(followers.size()!=0){
+			/*for(int i=0;i<followedby.length;i++)
+			{
+			UserModel userfollowedby = UserModel.dataFollower(followedby[i]);
+			jsons.put("id["+i+"]", userfollowedby.getId());
+			jsons.put("name["+i+"]", userfollowedby.getName());
+			jsons.put("email["+i+"]", userfollowedby.getEmail());
+			}*/
+			System.out.println("Services.getFollowers()" + followers.toString());
+			
 
+		    JSONArray jsArray = new JSONArray();
+		    JSONObject jObject = new JSONObject();
+			    for (UserModel user : followers)
+			    {
+			         JSONObject userJson = new JSONObject();
+			         userJson.put("id", user.getId());
+			         userJson.put("name", user.getName());
+			         userJson.put("pass", user.getPass());
+			         userJson.put("email", user.getEmail());
+			         userJson.put("lat", user.getLat());
+			         userJson.put("lon", user.getLon());
+			         
+			         jsArray.add(userJson);
+			    }
+			    jObject.put("followersList", jsArray);
+			
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("String", "nodata");
+			return jsons.toJSONString();
+		}
+	}
+	
 
 	@GET
 	@Path("/")
