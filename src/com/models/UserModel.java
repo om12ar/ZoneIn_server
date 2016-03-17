@@ -17,6 +17,19 @@ public class UserModel {
 	private Double lat;
 	private Double lon;
 	
+	public UserModel(UserModel other) {
+		this.name= other.name;
+		this.email=other.email;
+		this.pass = other.pass;
+		this.id = other.id;
+		this.lat = other.lat;
+		this.lon = other.lon; 
+	}
+
+	public UserModel() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getPass(){
 		return pass;
 	}
@@ -60,11 +73,11 @@ public class UserModel {
 	public Double getLon() {
 		return lon;
 	}
-
+	
 	public void setLon(Double lon) {
 		this.lon = lon;
 	}
-
+	
 	public static UserModel addNewUser(String name, String email, String pass) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -95,7 +108,6 @@ public class UserModel {
 		return null;
 	}
 
-	
 	
 	public static UserModel login(String email, String pass) {
 		try {
@@ -176,6 +188,76 @@ public class UserModel {
 			e.printStackTrace();
 		}
 		return false; 
+	}
+	
+	public static UserModel getUserById(int id) {
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Select * from user where `id` = ? ";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				UserModel user = new UserModel();
+				user.id = rs.getInt(1);
+				user.email = rs.getString("email");
+				user.pass = rs.getString("pass");
+				user.name = rs.getString("name");
+				user.lat = rs.getDouble("lat");
+				user.lon = rs.getDouble("lon");
+				return user;
+			}
+			return null;
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public static Double getLatById(int id) {
+		Double lat = -1.0;
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Select * from users where `id` = ?";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				lat = rs.getDouble("lat");
+				return lat;
+			}
+			return null;
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static Double getLonById(int id) {
+		Double lon = -1.0;
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Select * from users where `id` = ?";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				lon = rs.getDouble("long");
+
+				return lon;
+			}
+			return null;
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

@@ -68,8 +68,6 @@ public class Services {
 		return json.toJSONString();
 	}
 
-
-	
 	
 	@POST
 	@Path("/follow")
@@ -79,6 +77,19 @@ public class Services {
 		Boolean status = UserModel.follow(Integer.parseInt(followerID), Integer.parseInt(followedID));
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/getUserPosition")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getUserPosition(@FormParam("id") String userID ){
+	
+		double lat = UserModel.getLatById(Integer.parseInt(userID));
+		double lon = UserModel.getLonById(Integer.parseInt(userID));
+		JSONObject json = new JSONObject();
+		json.put("lat", lat);
+		json.put("long", lon);
 		return json.toJSONString();
 	}
 
