@@ -291,6 +291,34 @@ public class UserModel {
 		return null;
 		
 	}
+	
+	public static ArrayList<UserModel> getAllUsers()
+	{
+		try {
+			Connection conn=DBConnection.getActiveConnection();
+			String sql="SELECT * FROM users" ;
+			PreparedStatement stmt;
+			stmt=conn.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery();
+			ArrayList<UserModel> users= new ArrayList<>();
+					
+			while (rs.next()) {
+				UserModel temp =  getUserById(rs.getInt(1)) ;
+				users.add(temp);
+				System.out.println("UserModel.getUserIDs()" + temp.toString());
+				
+			}
+			return users;
+		}
+		
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
 
 	
 }

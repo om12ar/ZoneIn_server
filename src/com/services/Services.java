@@ -148,6 +148,42 @@ public class Services {
 		}
 	}
 	
+	@POST 
+	@Path("/getAllUsers")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getFollowers()
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<UserModel> users = new ArrayList<>(UserModel.getAllUsers()) ;
+		if(users.size()!=0){
+			System.out.println("Services.getAllUsers()" + users.toString());
+			
+
+		    JSONArray jsArray = new JSONArray();
+		    JSONObject jObject = new JSONObject();
+			    for (UserModel user : users)
+			    {
+			         JSONObject userJson = new JSONObject();
+			         userJson.put("id", user.getId());
+			         userJson.put("name", user.getName());
+			         userJson.put("pass", user.getPass());
+			         userJson.put("email", user.getEmail());
+			         userJson.put("lat", user.getLat());
+			         userJson.put("lon", user.getLon());
+			         
+			         jsArray.add(userJson);
+			    }
+			    jObject.put("userList", jsArray);
+			
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("String", "nodata");
+			return jsons.toJSONString();
+		}
+	}
+	
+	
 
 	@GET
 	@Path("/")
