@@ -319,6 +319,36 @@ public class UserModel {
 		return null;
 		
 	}
+	
+	
+	public static ArrayList<UserModel> getFollowedBy(Integer id)
+	{
+		try {
+			Connection conn=DBConnection.getActiveConnection();
+			String sql="select followed from follows where follower = ?" ;
+			PreparedStatement stmt;
+			stmt=conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			ArrayList<UserModel> follows= new ArrayList<>();
+					
+			while (rs.next()) {
+				
+				UserModel temp =  getUserById(rs.getInt(1)) ;
+				follows.add(temp);
+				
+			}
+			return follows;
+		}
+		
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
 
 	
 }

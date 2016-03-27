@@ -58,7 +58,7 @@ public class Services {
 		json.put("long", user.getLon());
 		return json.toJSONString();
 	}
-	
+
 	@POST
 	@Path("/updatePosition")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -70,23 +70,23 @@ public class Services {
 		return json.toJSONString();
 	}
 
-	
+
 	@POST
 	@Path("/follow")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String follow(@FormParam("followerID") String followerID, @FormParam("followedID") String followedID){
-		
+
 		Boolean status = UserModel.follow(Integer.parseInt(followerID), Integer.parseInt(followedID));
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 	}
-	
+
 	@POST
 	@Path("/getUserPosition")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getUserPosition(@FormParam("id") String userID ){
-	
+
 		double lat = UserModel.getLatById(Integer.parseInt(userID));
 		double lon = UserModel.getLonById(Integer.parseInt(userID));
 		JSONObject json = new JSONObject();
@@ -105,7 +105,7 @@ public class Services {
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 	}
-	
+
 	@POST 
 	@Path("/getFollowers")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -113,41 +113,32 @@ public class Services {
 	{
 		JSONObject jsons=new JSONObject();
 		ArrayList<UserModel> followers = new ArrayList<>(UserModel.getFollowersIDs(id)) ;
-		if(followers.size()!=0){
-			/*for(int i=0;i<followedby.length;i++)
-			{
-			UserModel userfollowedby = UserModel.dataFollower(followedby[i]);
-			jsons.put("id["+i+"]", userfollowedby.getId());
-			jsons.put("name["+i+"]", userfollowedby.getName());
-			jsons.put("email["+i+"]", userfollowedby.getEmail());
-			}*/
-			System.out.println("Services.getFollowers()" + followers.toString());
-			
 
-		    JSONArray jsArray = new JSONArray();
-		    JSONObject jObject = new JSONObject();
-			    for (UserModel user : followers)
-			    {
-			         JSONObject userJson = new JSONObject();
-			         userJson.put("id", user.getId());
-			         userJson.put("name", user.getName());
-			         userJson.put("pass", user.getPass());
-			         userJson.put("email", user.getEmail());
-			         userJson.put("lat", user.getLat());
-			         userJson.put("lon", user.getLon());
-			         
-			         jsArray.add(userJson);
-			    }
-			    jObject.put("followersList", jsArray);
-			
+		if(followers.size()!=0){
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (UserModel user : followers)
+			{
+				JSONObject userJson = new JSONObject();
+				userJson.put("id", user.getId());
+				userJson.put("name", user.getName());
+				userJson.put("pass", user.getPass());
+				userJson.put("email", user.getEmail());
+				userJson.put("lat", user.getLat());
+				userJson.put("lon", user.getLon());
+
+				jsArray.add(userJson);
+			}
+			jObject.put("followersList", jsArray);
+
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", "nodata");
+			jsons.put("String", "empty set");
 			return jsons.toJSONString();
 		}
 	}
-	
+
 	@POST 
 	@Path("/getAllUsers")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -157,33 +148,66 @@ public class Services {
 		ArrayList<UserModel> users = new ArrayList<>(UserModel.getAllUsers()) ;
 		if(users.size()!=0){
 			System.out.println("Services.getAllUsers()" + users.toString());
-			
 
-		    JSONArray jsArray = new JSONArray();
-		    JSONObject jObject = new JSONObject();
-			    for (UserModel user : users)
-			    {
-			         JSONObject userJson = new JSONObject();
-			         userJson.put("id", user.getId());
-			         userJson.put("name", user.getName());
-			         userJson.put("pass", user.getPass());
-			         userJson.put("email", user.getEmail());
-			         userJson.put("lat", user.getLat());
-			         userJson.put("lon", user.getLon());
-			         
-			         jsArray.add(userJson);
-			    }
-			    jObject.put("userList", jsArray);
-			
+
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (UserModel user : users)
+			{
+				JSONObject userJson = new JSONObject();
+				userJson.put("id", user.getId());
+				userJson.put("name", user.getName());
+				userJson.put("pass", user.getPass());
+				userJson.put("email", user.getEmail());
+				userJson.put("lat", user.getLat());
+				userJson.put("lon", user.getLon());
+
+				jsArray.add(userJson);
+			}
+			jObject.put("userList", jsArray);
+
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", "nodata");
+			jsons.put("String", "empty set");
 			return jsons.toJSONString();
 		}
 	}
-	
-	
+
+
+	@POST 
+	@Path("/getFollowedBy")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getFollowedBy(@FormParam("userID")Integer id)
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<UserModel> followedByUser = new ArrayList<>(UserModel.getFollowedBy(id)) ;
+
+		if(followedByUser.size() > 0){
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (UserModel user : followedByUser)
+			{
+				JSONObject userJson = new JSONObject();
+				userJson.put("id", user.getId());
+				userJson.put("name", user.getName());
+				userJson.put("pass", user.getPass());
+				userJson.put("email", user.getEmail());
+				userJson.put("lat", user.getLat());
+				userJson.put("lon", user.getLon());
+
+				jsArray.add(userJson);
+			}
+			jObject.put("followedByUser" , jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("String", "empty set");
+			return jsons.toJSONString();
+		}
+	}
+
 
 	@GET
 	@Path("/")
@@ -192,9 +216,9 @@ public class Services {
 		return "Hello after editing";
 
 	}
-	
 
-	
+
+
 
 }
 
