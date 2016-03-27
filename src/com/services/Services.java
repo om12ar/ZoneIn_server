@@ -63,7 +63,7 @@ public class Services {
 	@Path("/updatePosition")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String updatePosition(@FormParam("id") String id,
-			@FormParam("lat") String lat, @FormParam("long") String lon) {
+			@FormParam("lat") String lat, @FormParam("long") String long) {
 		Boolean status = UserModel.updateUserPosition(Integer.parseInt(id), Double.parseDouble(lat), Double.parseDouble(lon));
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
@@ -134,7 +134,7 @@ public class Services {
 			         userJson.put("pass", user.getPass());
 			         userJson.put("email", user.getEmail());
 			         userJson.put("lat", user.getLat());
-			         userJson.put("lon", user.getLon());
+			         userJson.put("long", user.getLon());
 			         
 			         jsArray.add(userJson);
 			    }
@@ -169,7 +169,7 @@ public class Services {
 			         userJson.put("pass", user.getPass());
 			         userJson.put("email", user.getEmail());
 			         userJson.put("lat", user.getLat());
-			         userJson.put("lon", user.getLon());
+			         userJson.put("long", user.getLon());
 			         
 			         jsArray.add(userJson);
 			    }
