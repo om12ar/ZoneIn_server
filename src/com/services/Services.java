@@ -215,8 +215,46 @@ public class Services {
 			return jsons.toJSONString();
 		}
 	}
+	
+	@POST 
+	@Path("/getsavedplaces")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getSavedPlace(@FormParam("userID")Integer id)
+	{
+		
+		JSONObject jsons=new JSONObject();
+		ArrayList<Integer> UserSavedPlaces = new ArrayList<>(UserModel.getsavePlace(id)) ;
 
+		if(UserSavedPlaces.size() > 0){
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (Integer user : UserSavedPlaces)
+			{
+				JSONObject userJson = new JSONObject();
+				userJson.put("Place id: ", user);
+				
+				jsArray.add(userJson);
+			}
+			jObject.put("UserSavedPlaces:" , jsArray);
 
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("String", "empty set");
+			return jsons.toJSONString();
+		}
+	}
+	@POST 
+	@Path("/saveplaces")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String SavePlace(@FormParam("userID")Integer id,@FormParam("placeID") Integer placeid)
+	{
+		Boolean status = UserModel.savePlace(id,placeid);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? "Done sucessfully" : "Failed to add");
+		return json.toJSONString();
+		
+	}
 
 
 	
