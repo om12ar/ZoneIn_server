@@ -255,7 +255,25 @@ public class Services {
 		return json.toJSONString();
 		
 	}
-
+	
+	@POST 
+	@Path("/resetpassword")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getpassword(@FormParam("userEmail")String email)
+	{
+		JSONObject jsons=new JSONObject();
+	
+		String password=UserModel.restorePassword(email);
+		if(password!=null){
+		//JSONObject userJson = new JSONObject();
+		jsons.put("password", password);
+					return jsons.toJSONString();
+		}
+		else {
+			jsons.put("String", "empty set");
+			return jsons.toJSONString();
+		}
+	}
 
 	
 

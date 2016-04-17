@@ -396,8 +396,29 @@ public class UserModel {
 			e.printStackTrace();
 		}
 		return false;
-		
-		
+	}
+	
+	public static String restorePassword(String email)
+	{
+		try{
+			Connection conn=DBConnection.getActiveConnection();
+			String sql="SELECT password FROM users WHERE email=?";
+			PreparedStatement stmt;
+			stmt=conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			ResultSet rs=stmt.executeQuery();
+			String temp=null;
+			while(rs.next())
+			{
+				temp =  rs.getString(1);
+			}
+			return temp;
+			
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }
