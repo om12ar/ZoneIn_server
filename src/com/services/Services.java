@@ -20,7 +20,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.models.DBConnection;
+import com.models.NotificationModel;
 import com.models.UserModel;
+import com.models.comment;
 
 @Path("/")
 public class Services {
@@ -257,6 +259,45 @@ public class Services {
 	}
 	
 	@POST 
+	@Path("/numberofnotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getnumberofnotification(@FormParam("userID")Integer ID)
+	{
+		JSONObject jsons=new JSONObject();
+		NotificationModel not1=new comment("Hello");
+		int number=not1.getnumberofNotification(ID);
+		//System.out.println(password);
+		if(number!=0){
+		//JSONObject userJson = new JSONObject();
+		jsons.put("you have ", (number+" notification "));
+		//NotificationModel.addUserID(ID);
+		//NotificationModel.notifyUser();
+					return jsons.toJSONString();
+		}
+		else {
+			jsons.put("you have", "No notification");
+			return jsons.toJSONString();
+		}
+	}
+	@POST
+	@Path("/sendnotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("txt")String commnt)
+	{
+		JSONObject jsons=new JSONObject();
+		NotificationModel notification1=new comment(commnt);
+		
+		int number=notification1.getnumberofNotification(toID);
+		notification1.addUserID(toID);
+		
+		notification1.addNotificationText(fromID, toID);
+		
+		jsons.put("you have ", (number+" notification "));
+		
+		return jsons.toJSONString();	
+	}
+	
+	@POST 
 	@Path("/resetpassword")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getpassword(@FormParam("userEmail")String email)
@@ -265,7 +306,7 @@ public class Services {
 	
 		String password=UserModel.restorePassword(email);
 		if(password!=null){
-		//JSONObject userJson = new JSONObject();
+		
 		jsons.put("password", password);
 					return jsons.toJSONString();
 		}
