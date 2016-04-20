@@ -113,9 +113,9 @@ public class UserModel {
 	public static UserModel login(String email, String pass) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			if (conn == null)
-				System.out.println("null");
-			String sql = "Select * from users where email = ? and password = ?";
+			if(conn==null)
+				System.out.println("Hey no connection");
+			String sql = "Select * from users where `email` = ? and `password` = ?";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, email);
@@ -350,5 +350,74 @@ public class UserModel {
 		
 	}
 	
+
+	public static ArrayList<Integer> getsavePlace(int userID)
+	{
+		try {
+			Connection conn=DBConnection.getActiveConnection();
+			String sql="select placeID from user_place where userID = ?" ;
+			PreparedStatement stmt;
+			stmt=conn.prepareStatement(sql);
+			stmt.setInt(1, userID);
+			ResultSet rs = stmt.executeQuery();
+			ArrayList<Integer> places= new ArrayList<>();
+					
+			while (rs.next()) {
+				
+				places.add(rs.getInt(1));
+				
+			}
+			return places;
+		}
+		
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+		
+	}
+	public static boolean savePlace(int userID,int placeID)
+	{
+		try {
+			Connection conn=DBConnection.getActiveConnection();
+			String sql="INSERT INTO `user_place`(`userID`, `placeID`) VALUES (?,?)" ;
+			PreparedStatement stmt;
+			stmt=conn.prepareStatement(sql);
+			stmt.setInt(1, userID);
+			stmt.setInt(2, placeID);
+			stmt.executeUpdate();
+			return true;
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static String restorePassword(String email)
+	{
+		try{
+			Connection conn=DBConnection.getActiveConnection();
+			String sql="SELECT password FROM users WHERE email=?";
+			PreparedStatement stmt;
+			stmt=conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			ResultSet rs=stmt.executeQuery();
+			String temp=null;
+			while(rs.next())
+			{
+				temp =  rs.getString(1);
+			}
+			return temp;
+			
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 }
