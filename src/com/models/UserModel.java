@@ -113,7 +113,9 @@ public class UserModel {
 	public static UserModel login(String email, String pass) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from users where `email` = ? and `password` = ?";
+			if (conn == null)
+				System.out.println("null");
+			String sql = "Select * from users where email = ? and password = ?";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, email);
@@ -284,7 +286,6 @@ public class UserModel {
 		}
 		
 		catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -312,7 +313,6 @@ public class UserModel {
 		}
 		
 		catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -349,6 +349,6 @@ public class UserModel {
 		return null;
 		
 	}
-
+	
 	
 }

@@ -19,8 +19,9 @@ import org.glassfish.jersey.server.mvc.Viewable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.models.DBConnection;
-import com.models.UserModel;
+//import com.models.DBConnection;
+//import com.models.UserModel;
+import com.models.*; 
 
 @Path("/")
 public class Services {
@@ -158,7 +159,6 @@ public class Services {
 		if(users.size()!=0){
 			System.out.println("Services.getAllUsers()" + users.toString());
 			
-
 		    JSONArray jsArray = new JSONArray();
 		    JSONObject jObject = new JSONObject();
 			    for (UserModel user : users)
@@ -218,17 +218,97 @@ public class Services {
 
 
 
-
+	@POST
+	@Path("/addplace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addPlace(@FormParam("name") String name,
+			@FormParam("description") String description, @FormParam("lon") double longitude, @FormParam("lat") double latitude) {
+		Place place = Place.addPlace(name, description, longitude, latitude); 
+		
+		JSONObject json = new JSONObject();
+		json.put("id", place.getID() );
+		json.put("name", place.getName());
+		json.put("description", place.getDescription());
+		json.put("lat", place.getLatitude());
+		json.put("long", place.getLongitude());
+		return json.toJSONString();
+	}
 	
 
+	
+	@POST 
+	@Path("/getAllPlaces")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getPlaces()
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<Place> places = new ArrayList<>(Place.getAllPlaces()) ;
+		if(places.size()!=0){			
+		    JSONArray jsArray = new JSONArray();
+		    JSONObject jObject = new JSONObject();
+			    for (Place place : places)
+			    {
+			         JSONObject placeJson = new JSONObject();
+			         placeJson.put("id", place.getID());
+			         placeJson.put("name", place.getName());
+			         placeJson.put("description", place.getDescription());
+			         placeJson.put("lat", place.getLatitude());
+			         placeJson.put("long", place.getLongitude());
+			         
+			         jsArray.add(placeJson);
+			    }
+			    jObject.put("placeList", jsArray);
+			
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("String", "nodata");
+			return jsons.toJSONString();
+		}
+	}
+	
+	@POST
+	@Path("/checkIn")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String checkIn(@FormParam("placeID") int placeID,
+			@FormParam("userID") int userID) {
+		Boolean status = Place.checkIn(placeID, userID); 
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	
+	@POST
+	@Path("/comment")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String comment(@FormParam("checkinID") int checkinID,
+			@FormParam("comment") String comment) {
+		Boolean status = Place.comment(checkinID, comment);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/like")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String like(@FormParam("checkinID") int checkinID) {
+		Boolean status = Place.like(checkinID);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getJson() {
-		return "Hello after editing";
+		return "Hello";
 
 	}
 	
+
 
 	
 

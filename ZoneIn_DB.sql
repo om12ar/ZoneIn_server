@@ -73,6 +73,44 @@ CREATE TABLE IF NOT EXISTS `ZoneIn_DB`.`follows` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+-- -----------------------------------------------------
+-- Table `ZoneIn_DB`.`checkin`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ZoneIn_DB`.`checkin` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `placeID` INT(11) NOT NULL,
+  `userID` INT(11) NOT NULL,
+  `likes` INT(11) NOT NULL default 0,
+   PRIMARY KEY (`id`),
+   CONSTRAINT `fk1`
+     FOREIGN KEY (`userID`)
+     REFERENCES `ZoneIn_DB`.`users` (`id`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION,
+   CONSTRAINT `fk2`
+     FOREIGN KEY (`placeID`)
+     REFERENCES `ZoneIn_DB`.`places` (`id`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `ZoneIn_DB`.`comment`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ZoneIn_DB`.`comment` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `checkinID` INT(11) NOT NULL,
+  `comment` TEXT NOT NULL,
+   PRIMARY KEY (`id`),
+   CONSTRAINT `fk3`
+     FOREIGN KEY (`checkinID`)
+     REFERENCES `ZoneIn_DB`.`checkin` (`id`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+   
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
