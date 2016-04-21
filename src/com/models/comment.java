@@ -102,7 +102,7 @@ public class comment implements NotificationModel {
 		try {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, UserID);
-			System.out.println(stmt);
+			//System.out.println(stmt);
 			ResultSet rs = stmt.executeQuery();
 			//System.out.println(rs.next());
 			//String s;
@@ -116,11 +116,11 @@ public class comment implements NotificationModel {
 				notf.add(temp);
 				//System.out.println("Comment.getNotification()"
 					//	+ temp.toString());
-				System.out.println("Not OKAI");
+				//System.out.println("Not OKAI");
 				updateSeenofNotification(temp.NotfID);
 
 			}
-			System.out.println("OKai");
+			//System.out.println("OKai");
 			return notf;
 
 		} catch (SQLException e) {

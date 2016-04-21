@@ -513,12 +513,18 @@ public class Services {
 			public String getAllNotification(@FormParam("ID")Integer id)
 			{
 				JSONObject jsons=new JSONObject();
-				if(getLikenote(id).contains("No New")&&getCommentnote(id).contains("No New"))
-					jsons.put("", "No New Notification")	;
-				else if(!getCommentnote(id).contains("No New"))
-					jsons.put("Comment Notification: ",getCommentnote(id));
-				else 
-					jsons.put("Like Notification: ", getLikenote(id));
+				String comments =getCommentnote(id);
+				String likes=getLikenote(id);
+				if(comments.contains("No New")&&likes.contains("No New")){
+					jsons.put("", "No New Notification");
+				}
+				if(!comments.contains("No New")){
+					System.out.println();
+					jsons.put("Comment Notification: ",comments);
+				}
+				if(!likes.contains("No New")){ 
+					jsons.put("Like Notification: ", likes);
+				}
 				return jsons.toJSONString();
 			}
 //			@POST

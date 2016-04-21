@@ -18,8 +18,8 @@ public class DBConnection {
 			connection = DriverManager
 					.getConnection("jdbc:mysql://127.6.228.2:3306/zonein?"
 							+ "user=admin2sLmsaB&password=f-ThUdYmsN34&characterEncoding=utf8");
-			
 
+			
 							
 
 			return connection;
