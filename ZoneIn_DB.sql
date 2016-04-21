@@ -80,7 +80,9 @@ CREATE TABLE IF NOT EXISTS `ZoneIn_DB`.`checkin` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `placeID` INT(11) NOT NULL,
   `userID` INT(11) NOT NULL,
+  `review` TEXT ,
   `likes` INT(11) NOT NULL default 0,
+  
    PRIMARY KEY (`id`),
    CONSTRAINT `fk1`
      FOREIGN KEY (`userID`)

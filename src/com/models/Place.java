@@ -150,15 +150,16 @@ public class Place {
 
 	}
 
-	public static boolean checkIn(int placeID, int userID) {
+	public static boolean checkIn(int placeID, int userID, String review) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Insert into checkin (`placeID`,`userID`) VALUES  (?,?)";
+			String sql = "Insert into checkin (`placeID`,`userID`, `review`) VALUES  (?,?,?)";
 
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, placeID);
 			stmt.setInt(2, userID);
+			stmt.setString(3,review);
 			stmt.executeUpdate();
 
 			Place place = Place.getPlaceByID(placeID);

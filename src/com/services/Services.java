@@ -340,8 +340,8 @@ public class Services {
 	@Path("/checkIn")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String checkIn(@FormParam("placeID") int placeID,
-			@FormParam("userID") int userID) {
-		Boolean status = Place.checkIn(placeID, userID); 
+			@FormParam("userID") int userID, @FormParam("review") String review) {
+		Boolean status = Place.checkIn(placeID, userID, review); 
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();

@@ -12,7 +12,6 @@ public class Like implements NotificationModel {
 	public Integer user = 0;
 	public Integer NotfID=0;
 	public String notificationText;
-	public Integer postID=0;
 
 //	public comment(String txt) {
 //		notificationText = txt;
@@ -70,23 +69,21 @@ public class Like implements NotificationModel {
 
 	// }
 
-	public void addNotificationText(Integer fromID, Integer toID,Integer postID) {
+	public void addNotificationText(Integer fromID, Integer toID) {
 		// add to the table notification user id and notification id and sender
 		// id and text
-		String sql = "INSERT INTO `notification`(`NotfID`, `toID`, "
-				+ "`FromID`, `postID` ,`Type`, `seen`, `text`)"
-				+ " VALUES (NULL,?,?,?,?,?,?)";
+		String sql = "INSERT INTO `notification`(`NotfID`, `toID`, `FromID`, `Type`, `seen`, `text`)"
+				+ " VALUES (NULL,?,?,?,?,?)";
 		Connection conn = DBConnection.getActiveConnection();
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, toID);
 			stmt.setInt(2, fromID);
-			stmt.setInt(3, postID);// 1 inducate Like type ...
-			stmt.setInt(4, 1);// Zero inducate unseen...
+			stmt.setInt(3, 1);// 1 inducate Like type ...
+			stmt.setInt(4, 0);// Zero inducate unseen...
 			notificationText=fromID+"Likes your checkin "+toID+"Post";
-			stmt.setInt(5, 0);
-			stmt.setString(6, notificationText);
+			stmt.setString(5, notificationText);
 			System.out.println(stmt.toString());
 			stmt.execute();
 		} catch (SQLException e) {
@@ -100,7 +97,7 @@ public class Like implements NotificationModel {
 		//System.out.println("userID: " + UserID);
 		// TODO Auto-generated method stub
 		// search in database for the user ID
-		String sql = "SELECT `NotfID`,  `FromID`,`postID`,`text` FROM `notification` "
+		String sql = "SELECT `NotfID`,  `FromID`,  `text` FROM `notification` "
 				+ "WHERE `seen`=0 AND `Type`=1 AND `toID`=?";
 		Connection conn = DBConnection.getActiveConnection();
 		PreparedStatement stmt;
