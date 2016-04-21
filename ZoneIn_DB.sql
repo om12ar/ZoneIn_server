@@ -115,3 +115,36 @@ DEFAULT CHARACTER SET = utf8;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Table `ZoneIn_DB`.`users`
+-- -----------------------------------------------------
+ALTER TABLE `users` ADD `numberofnotification` INT NOT NULL AFTER `long`;
+
+-- -----------------------------------------------------
+-- Table `ZoneIn_DB`.`user_place`
+-- -----------------------------------------------------
+CREATE TABLE `zonein_db`.`user_place` ( `userID` INT NOT NULL , `placeID` INT NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `user_place`
+  DROP PRIMARY KEY,
+   ADD PRIMARY KEY(
+     `userID`,
+     `placeID`);
+-- -----------------------------------------------------
+-- Table `ZoneIn_DB`.`notification`
+-- -----------------------------------------------------
+CREATE TABLE `zonein_db`.`notification` ( 
+`notfID` INT NOT NULL , 
+`toID` INT NOT NULL , `postID` INT NOT NULL , 
+`FromID` INT NOT NULL , PRIMARY KEY (`notfID`)) 
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `ZoneIn_DB`.`notification`
+-- -----------------------------------------------------
+
+ALTER TABLE `notification`
+ADD `seen` INT NOT NULL AFTER `FromID`, 
+ADD `type` INT NOT NULL AFTER `seen`, 
+ADD `txt` TEXT NOT NULL AFTER `type`;
+

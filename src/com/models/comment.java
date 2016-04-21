@@ -10,6 +10,7 @@ public class comment implements NotificationModel {
 	public Integer user = 0;
 	public Integer NotfID=0;
 	public String notificationText;
+	public Integer postID;
 
 	public comment(String txt) {
 		notificationText = txt;
@@ -68,20 +69,21 @@ public class comment implements NotificationModel {
 	// }
 
 
-	public void addNotificationText(Integer fromID, Integer toID) {
+	public void addNotificationText(Integer fromID, Integer toID,Integer onPost) {
 		// add to the table notification user id and notification id and sender
 		// id and text
-		String sql = "INSERT INTO `notification`(`NotfID`, `toID`, `FromID`, `Type`, `seen`, `text`)"
-				+ " VALUES (NULL,?,?,?,?,?)";
+		String sql = "INSERT INTO `notification`(`NotfID`, `toID`, `FromID`,`postID`,`Type`, `seen`, `text`)"
+				+ " VALUES (NULL,?,?,?,?,?,?)";
 		Connection conn = DBConnection.getActiveConnection();
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, toID);
 			stmt.setInt(2, fromID);
-			stmt.setInt(3, 0);// Zero inducate comment type ...
+			stmt.setInt(3, onPost);// Zero inducate comment type ...
 			stmt.setInt(4, 0);// Zero inducate unseen...
-			stmt.setString(5, notificationText);
+			stmt.setInt(5, 0);
+			stmt.setString(6, notificationText);
 			System.out.println(stmt.toString());
 			stmt.execute();
 		} catch (SQLException e) {
@@ -95,7 +97,7 @@ public class comment implements NotificationModel {
 		System.out.println("userID: " + UserID);
 		// TODO Auto-generated method stub
 		// search in database for the user ID
-		String sql = "SELECT `NotfID`,  `FromID`,  `text` FROM `notification` WHERE `seen`=0 AND `Type`=0 AND `toID`=?";
+		String sql = "SELECT `NotfID`,  `FromID`,`postID`  `text` FROM `notification` WHERE `seen`=0 AND `Type`=0 AND `toID`=?";
 		Connection conn = DBConnection.getActiveConnection();
 		PreparedStatement stmt;
 		ArrayList<NotificationModel> notf=new ArrayList<NotificationModel>();
@@ -112,7 +114,8 @@ public class comment implements NotificationModel {
 				comment temp = new comment("");
 				temp.NotfID=rs.getInt(1);
 				temp.user=rs.getInt(2);
-				temp.notificationText=rs.getString(3);
+				temp.postID=rs.getInt(3);
+				temp.notificationText=rs.getString(4);
 				notf.add(temp);
 				//System.out.println("Comment.getNotification()"
 					//	+ temp.toString());
@@ -147,6 +150,7 @@ public class comment implements NotificationModel {
 			e.printStackTrace();
 		}
 	}
+	
 	public String toString() {
 		return notificationText;
 		

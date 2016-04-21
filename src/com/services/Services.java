@@ -275,6 +275,7 @@ public class Services {
 			@Produces(MediaType.TEXT_PLAIN)
 			public String SavePlace(@FormParam("userID")Integer id,@FormParam("placeID") Integer placeid)
 			{
+				//System.out.println(id+"::"+placeid);
 				Boolean status = UserModel.savePlace(id,placeid);
 				JSONObject json = new JSONObject();
 				json.put("status", status ? "Done sucessfully" : "Failed to add");
@@ -381,17 +382,17 @@ public class Services {
 			@POST
 			@Path("/sendLike")
 			@Produces(MediaType.TEXT_PLAIN)
-			public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID)
+			public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("postID")Integer postID)
 			{
 				JSONObject jsons=new JSONObject();
 				NotificationModel notification1=new Like ();
-				
-				int number=notification1.getnumberofNotification(toID);
+				System.out.println("Hello");
+				//int number=notification1.getnumberofNotification(toID);
 				notification1.addUserID(toID);
-				
-				notification1.addNotificationText(fromID, toID);
-				
-				jsons.put("you have ", (number+" notification "));
+				System.out.println("any body here");
+				notification1.addNotificationText(fromID, toID,postID);
+				System.out.println("echo");
+				//jsons.put("you have ", (number+" notification "));
 				
 				return jsons.toJSONString();	
 			}
@@ -492,7 +493,7 @@ public class Services {
 			@POST
 			@Path("/sendnotification")
 			@Produces(MediaType.TEXT_PLAIN)
-			public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("txt")String commnt)
+			public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("postID")Integer postID,@FormParam("txt")String commnt)
 			{
 				JSONObject jsons=new JSONObject();
 				NotificationModel notification1=new comment(commnt);
@@ -500,7 +501,7 @@ public class Services {
 				int number=notification1.getnumberofNotification(toID);
 				notification1.addUserID(toID);
 				
-				notification1.addNotificationText(fromID, toID);
+				notification1.addNotificationText(fromID, toID,postID);
 				
 				jsons.put("you have ", (number+" notification "));
 				
