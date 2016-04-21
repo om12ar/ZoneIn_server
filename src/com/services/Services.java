@@ -228,7 +228,7 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getSavedPlace(@FormParam("userID")Integer id)
 	{
-		
+
 		JSONObject jsons=new JSONObject();
 		ArrayList<Integer> UserSavedPlaces = new ArrayList<>(UserModel.getsavePlace(id)) ;
 
@@ -239,7 +239,7 @@ public class Services {
 			{
 				JSONObject userJson = new JSONObject();
 				userJson.put("Place id: ", user);
-				
+
 				jsArray.add(userJson);
 			}
 			jObject.put("UserSavedPlaces:" , jsArray);
@@ -254,311 +254,336 @@ public class Services {
 
 
 
-			@POST
-			@Path("/addplace")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String addPlace(@FormParam("name") String name,
-					@FormParam("description") String description, @FormParam("lon") double longitude, @FormParam("lat") double latitude) {
-				Place place = Place.addPlace(name, description, longitude, latitude); 
+	@POST
+	@Path("/addplace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addPlace(@FormParam("name") String name,
+			@FormParam("description") String description, @FormParam("lon") double longitude, @FormParam("lat") double latitude) {
+		Place place = Place.addPlace(name, description, longitude, latitude); 
 
-				JSONObject json = new JSONObject();
-				json.put("id", place.getID() );
-				json.put("name", place.getName());
-				json.put("description", place.getDescription());
-				json.put("lat", place.getLatitude());
-				json.put("long", place.getLongitude());
-				return json.toJSONString();
-			}
+		JSONObject json = new JSONObject();
+		json.put("id", place.getID() );
+		json.put("name", place.getName());
+		json.put("description", place.getDescription());
+		json.put("lat", place.getLatitude());
+		json.put("long", place.getLongitude());
+		return json.toJSONString();
+	}
 
-			@POST 
-			@Path("/saveplaces")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String SavePlace(@FormParam("userID")Integer id,@FormParam("placeID") Integer placeid)
-			{
-				Boolean status = UserModel.savePlace(id,placeid);
-				JSONObject json = new JSONObject();
-				json.put("status", status ? "Done sucessfully" : "Failed to add");
-				return json.toJSONString();
+	@POST 
+	@Path("/saveplaces")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String SavePlace(@FormParam("userID")Integer id,@FormParam("placeID") Integer placeid)
+	{
+		Boolean status = UserModel.savePlace(id,placeid);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? "Done sucessfully" : "Failed to add");
+		return json.toJSONString();
 
-			}
+	}
 
-			@POST 
-			@Path("/resetpassword")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String getpassword(@FormParam("userEmail")String email)
-			{
-				JSONObject jsons=new JSONObject();
+	@POST 
+	@Path("/resetpassword")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getpassword(@FormParam("userEmail")String email)
+	{
+		JSONObject jsons=new JSONObject();
 
-				String password=UserModel.restorePassword(email);
-				if(password!=null){
+		String password=UserModel.restorePassword(email);
+		if(password!=null){
 
-					jsons.put("password", password);
-					return jsons.toJSONString();
-				}
-				else {
-					jsons.put("String", "empty set");
-					return jsons.toJSONString();
-				}
-			}
-
-			
-
-
-
-@POST 
-@Path("/getAllPlaces")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String getPlaces()
-			{
-				JSONObject jsons=new JSONObject();
-				ArrayList<Place> places = new ArrayList<>(Place.getAllPlaces()) ;
-				if(places.size()!=0){			
-					JSONArray jsArray = new JSONArray();
-					JSONObject jObject = new JSONObject();
-					for (Place place : places)
-					{
-						JSONObject placeJson = new JSONObject();
-						placeJson.put("id", place.getID());
-						placeJson.put("name", place.getName());
-						placeJson.put("description", place.getDescription());
-						placeJson.put("lat", place.getLatitude());
-						placeJson.put("long", place.getLongitude());
-
-						jsArray.add(placeJson);
-					}
-					jObject.put("placeList", jsArray);
-
-					return jObject.toJSONString();
-				}
-				else {
-					jsons.put("String", "nodata");
-					return jsons.toJSONString();
-				}
-			}
-
-			@POST
-			@Path("/checkIn")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String checkIn(@FormParam("placeID") int placeID,
-					@FormParam("userID") int userID) {
-				Boolean status = Place.checkIn(placeID, userID); 
-				JSONObject json = new JSONObject();
-				json.put("status", status ? 1 : 0);
-				return json.toJSONString();
-			}
-			
-			@POST
-			@Path("/getallnotification")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String getallnotification(@FormParam("ID")Integer ID)
-			{
-				JSONObject jsons=new JSONObject();
-				NotificationModel notification1=new comment("");
-				NotificationModel notification2=new Like();
-				ArrayList<NotificationModel> userNotification =
-						new ArrayList<>(notification1.getNotificationText(ID)) ;
-				userNotification.addAll(notification2.getNotificationText(ID));
-				if(userNotification.size() > 0){
-					JSONArray jsArray = new JSONArray();
-					JSONObject jObject = new JSONObject();
-					for (NotificationModel user:userNotification)
-					{
-						JSONObject userJson = new JSONObject();
-						userJson.put("Notification",user.toString());
-						
-						jsArray.add(userJson);
-						
-					}
-					jObject.put("UserNotication: " , jsArray);
-
-					return jObject.toJSONString();
-				}
-				else {
-					jsons.put("No New", "Notification");
-					return jsons.toJSONString();
-				}
-			}
-			@POST
-			@Path("/sendLike")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID)
-			{
-				JSONObject jsons=new JSONObject();
-				NotificationModel notification1=new Like ();
-				
-				int number=notification1.getnumberofNotification(toID);
-				notification1.addUserID(toID);
-				
-				notification1.addNotificationText(fromID, toID);
-				
-				jsons.put("you have ", (number+" notification "));
-				
-				return jsons.toJSONString();	
-			}
-			
-			@POST
-			@Path("/getCommentnotification")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String getCommentnote(@FormParam("ID")Integer ID)
-			{
-				//System.out.println("At the server : "+ID);
-				JSONObject jsons=new JSONObject();
-				NotificationModel notification1=new comment("");
-					
-				ArrayList<NotificationModel> userNotification =
-						new ArrayList<>(notification1.getNotificationText(ID)) ;
-				//System.out.println(userNotification.size());
-				if(userNotification.size() > 0){
-					JSONArray jsArray = new JSONArray();
-					JSONObject jObject = new JSONObject();
-					System.out.println("Service okai");
-					for (int i=0;i<userNotification.size();i++)
-					{
-						comment user=(comment) userNotification.get(i);
-						JSONObject userJson = new JSONObject();
-						userJson.put("NotificationID: ", user.NotfID);
-						userJson.put("From user ID: ", user.user);
-						userJson.put("Notification Content: ", user.notificationText);
-						jsArray.add(userJson);
-					//	System.out.println(jsArray);
-					}
-					jObject.put("UserNotication: " , jsArray);
-					//System.out.println(jObject.toJSONString());
-					return jObject.toJSONString();
-				}
-				else {
-					jsons.put("No New", "Notification");
-					return jsons.toJSONString();
-				}
-			}
-			
-			@POST
-			@Path("/getLikenotification")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String getLikenote(@FormParam("ID")Integer ID)
-			{
-				//System.out.println("At the server : "+ID);
-				JSONObject jsons=new JSONObject();
-				NotificationModel notification1=new Like();
-					
-				ArrayList<NotificationModel> userNotification =
-						new ArrayList<>(notification1.getNotificationText(ID)) ;
-				//System.out.println(userNotification.size());
-				if(userNotification.size() > 0){
-					JSONArray jsArray = new JSONArray();
-					JSONObject jObject = new JSONObject();
-					System.out.println("Service okai");
-					for (int i=0;i<userNotification.size();i++)
-					{
-						comment user=(comment) userNotification.get(i);
-						JSONObject userJson = new JSONObject();
-						userJson.put("NotificationID: ", user.NotfID);
-						userJson.put("From user ID: ", user.user);
-						userJson.put("Notification Content: ", user.notificationText);
-						jsArray.add(userJson);
-					//	System.out.println(jsArray);
-					}
-					jObject.put("UserNotication: " , jsArray);
-					//System.out.println(jObject.toJSONString());
-					return jObject.toJSONString();
-				}
-				else {
-					jsons.put("No New", "Notification");
-					return jsons.toJSONString();
-				}
-			}
-			
-			@POST 
-			@Path("/numberofnotification")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String getnumberofnotification(@FormParam("userID")Integer ID)
-			{
-				JSONObject jsons=new JSONObject();
-				NotificationModel not1=new comment("Hello");
-				int number=not1.getnumberofNotification(ID);
-				//System.out.println(password);
-				if(number!=0){
-				//JSONObject userJson = new JSONObject();
-				jsons.put("you have ", (number+" notification "));
-				//NotificationModel.addUserID(ID);
-				//NotificationModel.notifyUser();
-							return jsons.toJSONString();
-				}
-				else {
-					jsons.put("you have", "No notification");
-					return jsons.toJSONString();
-				}
-			}
-			@POST
-			@Path("/sendnotification")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("txt")String commnt)
-			{
-				JSONObject jsons=new JSONObject();
-				NotificationModel notification1=new comment(commnt);
-				
-				int number=notification1.getnumberofNotification(toID);
-				notification1.addUserID(toID);
-				
-				notification1.addNotificationText(fromID, toID);
-				
-				jsons.put("you have ", (number+" notification "));
-				
-				return jsons.toJSONString();	
-			}
-			
-			@POST
-			@Path("/getAllNotification")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String getAllNotification(@FormParam("ID")Integer id)
-			{
-				JSONObject jsons=new JSONObject();
-				String comments =getCommentnote(id);
-				String likes=getLikenote(id);
-				if(comments.contains("No New")&&likes.contains("No New")){
-					jsons.put("", "No New Notification");
-				}
-				if(!comments.contains("No New")){
-					System.out.println();
-					jsons.put("Comment Notification: ",comments);
-				}
-				if(!likes.contains("No New")){ 
-					jsons.put("Like Notification: ", likes);
-				}
-				return jsons.toJSONString();
-			}
-//			@POST
-//			@Path("/comment")
-//			@Produces(MediaType.TEXT_PLAIN)
-//			public String comment(@FormParam("checkinID") int checkinID,
-//					@FormParam("comment") String comment) {
-//				Boolean status = Place.comment(checkinID, comment);
-//				JSONObject json = new JSONObject();
-//				json.put("status", status ? 1 : 0);
-//				return json.toJSONString();
-//			}
-//
-//			@POST
-//			@Path("/like")
-//			@Produces(MediaType.TEXT_PLAIN)
-//			public String like(@FormParam("checkinID") int checkinID) {
-//				Boolean status = Place.like(checkinID);
-//				JSONObject json = new JSONObject();
-//				json.put("status", status ? 1 : 0);
-//				return json.toJSONString();
-//			}
-
-			@GET
-			@Path("/")
-			@Produces(MediaType.TEXT_PLAIN)
-			public String getJson() {
-				return "Hello";
-
-			}
-
-
-
-
-
+			jsons.put("password", password);
+			return jsons.toJSONString();
 		}
+		else {
+			jsons.put("String", "empty set");
+			return jsons.toJSONString();
+		}
+	}
+
+
+
+
+
+	@POST 
+	@Path("/getAllPlaces")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getPlaces()
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<Place> places = new ArrayList<>(Place.getAllPlaces()) ;
+		if(places.size()!=0){			
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (Place place : places)
+			{
+				JSONObject placeJson = new JSONObject();
+				placeJson.put("id", place.getID());
+				placeJson.put("name", place.getName());
+				placeJson.put("description", place.getDescription());
+				placeJson.put("lat", place.getLatitude());
+				placeJson.put("long", place.getLongitude());
+
+				jsArray.add(placeJson);
+			}
+			jObject.put("placeList", jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("String", "nodata");
+			return jsons.toJSONString();
+		}
+	}
+
+	@POST
+	@Path("/checkIn")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String checkIn(@FormParam("placeID") int placeID,
+			@FormParam("userID") int userID) {
+		Boolean status = Place.checkIn(placeID, userID); 
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+
+	@POST
+	@Path("/getallnotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getallnotification(@FormParam("ID")Integer ID)
+	{
+		JSONObject jsons=new JSONObject();
+		NotificationModel notification1=new comment("");
+		NotificationModel notification2=new Like();
+		ArrayList<NotificationModel> userNotification =
+				new ArrayList<>(notification1.getNotificationText(ID)) ;
+		userNotification.addAll(notification2.getNotificationText(ID));
+		if(userNotification.size() > 0){
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (NotificationModel user:userNotification)
+			{
+				JSONObject userJson = new JSONObject();
+				userJson.put("Notification",user.toString());
+
+				jsArray.add(userJson);
+
+			}
+			jObject.put("UserNotication: " , jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("No New", "Notification");
+			return jsons.toJSONString();
+		}
+	}
+	@POST
+	@Path("/sendLike")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID)
+	{
+		JSONObject jsons=new JSONObject();
+		NotificationModel notification1=new Like ();
+
+		int number=notification1.getnumberofNotification(toID);
+		notification1.addUserID(toID);
+
+		notification1.addNotificationText(fromID, toID);
+
+		jsons.put("you have ", (number+" notification "));
+
+		return jsons.toJSONString();	
+	}
+
+	@POST
+	@Path("/getCommentnotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCommentnote(@FormParam("ID")Integer ID)
+	{
+		//System.out.println("At the server : "+ID);
+		JSONObject jsons=new JSONObject();
+		NotificationModel notification1=new comment("");
+
+		ArrayList<NotificationModel> userNotification =
+				new ArrayList<>(notification1.getNotificationText(ID)) ;
+		//System.out.println(userNotification.size());
+		if(userNotification.size() > 0){
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			System.out.println("Service okai");
+			for (int i=0;i<userNotification.size();i++)
+			{
+				comment user=(comment) userNotification.get(i);
+				JSONObject userJson = new JSONObject();
+				userJson.put("NotificationID: ", user.NotfID);
+				userJson.put("From user ID: ", user.user);
+				userJson.put("Notification Content: ", user.notificationText);
+				jsArray.add(userJson);
+				//	System.out.println(jsArray);
+			}
+			jObject.put("UserNotication: " , jsArray);
+			//System.out.println(jObject.toJSONString());
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("No New", "Notification");
+			return jsons.toJSONString();
+		}
+	}
+
+	@POST
+	@Path("/getLikenotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getLikenote(@FormParam("ID")Integer ID)
+	{
+		//System.out.println("At the server : "+ID);
+		JSONObject jsons=new JSONObject();
+		NotificationModel notification1=new Like();
+
+		ArrayList<NotificationModel> userNotification =
+				new ArrayList<>(notification1.getNotificationText(ID)) ;
+		//System.out.println(userNotification.size());
+		if(userNotification.size() > 0){
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			System.out.println("Service okay");
+			for (int i=0;i<userNotification.size();i++)
+			{
+				comment user=(comment) userNotification.get(i);
+				JSONObject userJson = new JSONObject();
+				userJson.put("NotificationID: ", user.NotfID);
+				userJson.put("From user ID: ", user.user);
+				userJson.put("Notification Content: ", user.notificationText);
+				jsArray.add(userJson);
+				//	System.out.println(jsArray);
+			}
+			jObject.put("UserNotication: " , jsArray);
+			//System.out.println(jObject.toJSONString());
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("No New", "Notification");
+			return jsons.toJSONString();
+		}
+	}
+
+	@POST 
+	@Path("/numberofnotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getnumberofnotification(@FormParam("userID")Integer ID)
+	{
+		JSONObject jsons=new JSONObject();
+		NotificationModel not1=new comment("Hello");
+		int number=not1.getnumberofNotification(ID);
+		//System.out.println(password);
+		if(number!=0){
+			//JSONObject userJson = new JSONObject();
+			jsons.put("you have ", (number+" notification "));
+			//NotificationModel.addUserID(ID);
+			//NotificationModel.notifyUser();
+			return jsons.toJSONString();
+		}
+		else {
+			jsons.put("you have", "No notification");
+			return jsons.toJSONString();
+		}
+	}
+	@POST
+	@Path("/sendnotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("txt")String commnt)
+	{
+		JSONObject jsons=new JSONObject();
+		NotificationModel notification1=new comment(commnt);
+
+		int number=notification1.getnumberofNotification(toID);
+		notification1.addUserID(toID);
+
+		notification1.addNotificationText(fromID, toID);
+
+		jsons.put("you have ", (number+" notification "));
+
+		return jsons.toJSONString();	
+	}
+
+	@POST
+	@Path("/getAllNotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getAllNotification(@FormParam("ID")Integer id)
+	{
+		JSONObject jsons=new JSONObject();
+		String comments =getCommentnote(id);
+		String likes=getLikenote(id);
+		if(comments.contains("No New")&&likes.contains("No New")){
+			jsons.put("", "No New Notification");
+		}
+		if(!comments.contains("No New")){
+			System.out.println();
+			jsons.put("Comment Notification: ",comments);
+		}
+		if(!likes.contains("No New")){ 
+			jsons.put("Like Notification: ", likes);
+		}
+		return jsons.toJSONString();
+	}
+	@POST
+	@Path("/comment")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String comment(@FormParam("checkinID") int checkinID,
+			@FormParam("comment") String comment) {
+		Boolean status = Place.comment(checkinID, comment);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+
+	@POST
+	@Path("/like")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String like(@FormParam("checkinID") int checkinID) {
+		Boolean status = Place.like(checkinID);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+
+	@GET
+	@Path("/")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getJson() {
+		return "Hello";
+
+	}
+
+
+	@POST 
+	@Path("/getComments")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getComments(@FormParam("checkinID") int checkinID)
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<String> comments = new ArrayList<>(Place.getComments(checkinID));  
+		if(comments.size()!=0){			
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (String comment : comments)
+			{
+				JSONObject commentJson = new JSONObject();
+				commentJson.put("comment", comment);
+				jsArray.add(commentJson);
+			}
+			jObject.put("commentList", jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("comment", " ");
+			return jsons.toJSONString();
+		}
+	}
+
+
+
+}
 
