@@ -381,6 +381,7 @@ public class UserModel {
 	}
 	public static boolean savePlace(int userID,int placeID)
 	{
+		System.out.println(userID+","+placeID);
 		try {
 			Connection conn=DBConnection.getActiveConnection();
 			String sql="INSERT INTO `user_place`(`userID`, `placeID`) VALUES (?,?)" ;
@@ -388,6 +389,7 @@ public class UserModel {
 			stmt=conn.prepareStatement(sql);
 			stmt.setInt(1, userID);
 			stmt.setInt(2, placeID);
+			//System.out.println(stmt);
 			stmt.executeUpdate();
 			return true;
 			
