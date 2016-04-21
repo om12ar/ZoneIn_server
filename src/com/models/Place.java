@@ -124,6 +124,30 @@ public class Place {
 		}
 		return null;
 	}
+	
+	public static checkinComment getCommentByID(int id) {
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Select * from comment where `id` = ? ";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				checkinComment comment = new checkinComment (); 
+				comment.ID = rs.getInt(1);
+				comment.checkinID = rs.getInt("checkinID");
+				comment.comment = rs.getString("comment");
+				
+				return comment;
+			}
+			return null;
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public static ArrayList<Place> getAllPlaces() {
 		try {
@@ -217,17 +241,18 @@ public class Place {
 		return false;
 	}
 
-	public static ArrayList<String> getComments(int checkinID ) {
+	public static ArrayList<checkinComment> getComments(int checkinID ) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select comment from comment where `checkinID` = ? ";
+			String sql = "Select * from comment where `checkinID` = ? ";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, checkinID);
-			ArrayList <String> comments = new ArrayList<String>(); 
+			ArrayList <checkinComment> comments = new ArrayList<checkinComment>(); 
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				comments.add(rs.getString(1)); 
+				checkinComment comment = getCommentByID(rs.getInt(1));
+				comments.add(comment); 
 				return comments; 
 				
 			}
@@ -238,4 +263,8 @@ public class Place {
 		}
 		return null;
 	}
-}
+	
+	
+	}
+
+

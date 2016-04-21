@@ -563,14 +563,18 @@ public class Services {
 	public String getComments(@FormParam("checkinID") int checkinID)
 	{
 		JSONObject jsons=new JSONObject();
-		ArrayList<String> comments = new ArrayList<>(Place.getComments(checkinID));  
+		ArrayList<checkinComment> comments = new ArrayList<>(Place.getComments(checkinID));  
 		if(comments.size()!=0){			
 			JSONArray jsArray = new JSONArray();
 			JSONObject jObject = new JSONObject();
-			for (String comment : comments)
+			for (checkinComment comment : comments)
 			{
 				JSONObject commentJson = new JSONObject();
-				commentJson.put("comment", comment);
+				commentJson.put("comment", comment.getComment());
+				commentJson.put("comment ID", comment.getID());
+				commentJson.put("check in ID", comment.getCheckinID());
+
+
 				jsArray.add(commentJson);
 			}
 			jObject.put("commentList", jsArray);
