@@ -6,14 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class comment implements NotificationModel {
+import org.glassfish.jersey.server.ParamException.QueryParamException;
+
+public class Like implements NotificationModel {
 	public Integer user = 0;
 	public Integer NotfID=0;
 	public String notificationText;
 
-	public comment(String txt) {
-		notificationText = txt;
-	}
+//	public comment(String txt) {
+//		notificationText = txt;
+//	}
 
 	public void addUserID(Integer notifierID) {
 		user = notifierID;
@@ -67,7 +69,6 @@ public class comment implements NotificationModel {
 
 	// }
 
-
 	public void addNotificationText(Integer fromID, Integer toID) {
 		// add to the table notification user id and notification id and sender
 		// id and text
@@ -79,8 +80,9 @@ public class comment implements NotificationModel {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, toID);
 			stmt.setInt(2, fromID);
-			stmt.setInt(3, 0);// Zero inducate comment type ...
+			stmt.setInt(3, 1);// 1 inducate Like type ...
 			stmt.setInt(4, 0);// Zero inducate unseen...
+			notificationText=fromID+"Likes your checkin "+toID+"Post";
 			stmt.setString(5, notificationText);
 			System.out.println(stmt.toString());
 			stmt.execute();
@@ -92,21 +94,20 @@ public class comment implements NotificationModel {
 
 	@Override
 	public ArrayList<NotificationModel> getNotificationText(Integer UserID) {
-		System.out.println("userID: " + UserID);
+		//System.out.println("userID: " + UserID);
 		// TODO Auto-generated method stub
 		// search in database for the user ID
-		String sql = "SELECT `NotfID`,  `FromID`,  `text` FROM `notification` WHERE `seen`=0 AND `Type`=0 AND `toID`=?";
+		String sql = "SELECT `NotfID`,  `FromID`,  `text` FROM `notification` "
+				+ "WHERE `seen`=0 AND `Type`=1 AND `toID`=?";
 		Connection conn = DBConnection.getActiveConnection();
 		PreparedStatement stmt;
 		ArrayList<NotificationModel> notf=new ArrayList<NotificationModel>();
 		try {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, UserID);
-			System.out.println(stmt);
+			
 			ResultSet rs = stmt.executeQuery();
-			//System.out.println(rs.next());
-			//String s;
-			//ArrayList<String> notftxt= new ArrayList<>();
+			
 			while (rs.next()) {
 			
 				comment temp = new comment("");
@@ -114,13 +115,11 @@ public class comment implements NotificationModel {
 				temp.user=rs.getInt(2);
 				temp.notificationText=rs.getString(3);
 				notf.add(temp);
-				//System.out.println("Comment.getNotification()"
-					//	+ temp.toString());
-				System.out.println("Not OKAI");
+				
 				updateSeenofNotification(temp.NotfID);
 
 			}
-			System.out.println("OKai");
+			//System.out.println("OKai");
 			return notf;
 
 		} catch (SQLException e) {
@@ -129,7 +128,7 @@ public class comment implements NotificationModel {
 		return null;
 	}
 	
-	public void updateSeenofNotification(int ID)
+	public static void updateSeenofNotification(int ID)
 	{
 		String sql = "UPDATE `notification` SET"
 				+ "`seen`=1 WHERE `NotfID`= ?";
@@ -151,7 +150,5 @@ public class comment implements NotificationModel {
 		return notificationText;
 		
 	}
-
-
 
 }

@@ -1,5 +1,7 @@
 package com.models;
 
+import java.util.ArrayList;
+
 
 //observer pattern
 public interface NotificationModel {
@@ -15,7 +17,7 @@ public interface NotificationModel {
 	
 
 	void addNotificationText(Integer fromID,Integer toID);
-	void getNotificationText(Integer UserID);
+	ArrayList<NotificationModel> getNotificationText(Integer UserID);
 	
  	
 
