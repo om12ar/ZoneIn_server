@@ -11,19 +11,19 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- Schema mydb
 -- -----------------------------------------------------
 -- -----------------------------------------------------
--- Schema zonein
+-- Schema ZoneIn_DB
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema zonein
+-- Schema ZoneIn_DB
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `zonein` DEFAULT CHARACTER SET utf8 ;
-USE `zonein` ;
+CREATE SCHEMA IF NOT EXISTS `ZoneIn_DB` DEFAULT CHARACTER SET utf8 ;
+USE `ZoneIn_DB` ;
 
 -- -----------------------------------------------------
--- Table `zonein`.`places`
+-- Table `ZoneIn_DB`.`places`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `zonein`.`places` (
+CREATE TABLE IF NOT EXISTS `ZoneIn_DB`.`places` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(300) NOT NULL,
   `description` TEXT NOT NULL,
@@ -35,9 +35,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `zonein`.`users`
+-- Table `ZoneIn_DB`.`users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `zonein`.`users` (
+CREATE TABLE IF NOT EXISTS `ZoneIn_DB`.`users` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(300) NOT NULL,
   `email` VARCHAR(500) NOT NULL,
@@ -52,9 +52,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `zonein`.`follows`
+-- Table `ZoneIn_DB`.`follows`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `zonein`.`follows` (
+CREATE TABLE IF NOT EXISTS `ZoneIn_DB`.`follows` (
   `follower` INT(11) NOT NULL,
   `followed` INT(11) NOT NULL,
   PRIMARY KEY (`follower`, `followed`),
@@ -62,52 +62,50 @@ CREATE TABLE IF NOT EXISTS `zonein`.`follows` (
   INDEX `fk_users_has_users_users_idx` (`follower` ASC),
   CONSTRAINT `fk_users_has_users_users`
     FOREIGN KEY (`follower`)
-    REFERENCES `zonein`.`users` (`id`)
+    REFERENCES `ZoneIn_DB`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_users_has_users_users1`
     FOREIGN KEY (`followed`)
-    REFERENCES `zonein`.`users` (`id`)
+    REFERENCES `ZoneIn_DB`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
--- Table `zonein`.`checkin`
+-- Table `ZoneIn_DB`.`checkin`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `zonein`.`checkin` (
+CREATE TABLE IF NOT EXISTS `ZoneIn_DB`.`checkin` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `placeID` INT(11) NOT NULL,
   `userID` INT(11) NOT NULL,
-  `review` TEXT ,
   `likes` INT(11) NOT NULL default 0,
-  
    PRIMARY KEY (`id`),
    CONSTRAINT `fk1`
      FOREIGN KEY (`userID`)
-     REFERENCES `zonein`.`users` (`id`)
+     REFERENCES `ZoneIn_DB`.`users` (`id`)
      ON DELETE NO ACTION
      ON UPDATE NO ACTION,
    CONSTRAINT `fk2`
      FOREIGN KEY (`placeID`)
-     REFERENCES `zonein`.`places` (`id`)
+     REFERENCES `ZoneIn_DB`.`places` (`id`)
      ON DELETE NO ACTION
      ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
--- Table `zonein`.`comment`
+-- Table `ZoneIn_DB`.`comment`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `zonein`.`comment` (
+CREATE TABLE IF NOT EXISTS `ZoneIn_DB`.`comment` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `checkinID` INT(11) NOT NULL,
   `comment` TEXT NOT NULL,
    PRIMARY KEY (`id`),
    CONSTRAINT `fk3`
      FOREIGN KEY (`checkinID`)
-     REFERENCES `zonein`.`checkin` (`id`)
+     REFERENCES `ZoneIn_DB`.`checkin` (`id`)
      ON DELETE NO ACTION
      ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -119,14 +117,14 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 - -----------------------------------------------------
--- Table `zonein`.`users`
+-- Table `ZoneIn_DB`.`users`
 -- -----------------------------------------------------
 ALTER TABLE `users` ADD `numberofnotification` INT NOT NULL AFTER `long`;
 
 -- -----------------------------------------------------
--- Table `zonein`.`user_place`
+-- Table `ZoneIn_DB`.`user_place`
 -- -----------------------------------------------------
-CREATE TABLE `zonein`.`user_place` ( `userID` INT NOT NULL , `placeID` INT NOT NULL ) ENGINE = InnoDB;
+CREATE TABLE `ZoneIn_DB`.`user_place` ( `userID` INT NOT NULL , `placeID` INT NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `user_place`
   DROP PRIMARY KEY,
    ADD PRIMARY KEY(
@@ -134,16 +132,16 @@ ALTER TABLE `user_place`
      `placeID`);
 
 -- -----------------------------------------------------
--- Table `zonein`.`notification`
+-- Table `ZoneIn_DB`.`notification`
 -- -----------------------------------------------------
-CREATE TABLE `zonein`.`notification` ( 
+CREATE TABLE `ZoneIn_DB`.`notification` ( 
 `notfID` INT NOT NULL , 
 `toID` INT NOT NULL , `postID` INT NOT NULL , 
 `FromID` INT NOT NULL , PRIMARY KEY (`notfID`)) 
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `zonein`.`notification`
+-- Table `ZoneIn_DB`.`notification`
 -- -----------------------------------------------------
 
 ALTER TABLE `notification`
