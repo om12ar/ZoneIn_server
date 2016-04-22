@@ -16,7 +16,7 @@ public interface NotificationModel {
 	public void notifyUser();
 	
 
-	void addNotificationText(Integer fromID,Integer toID);
+	void addNotificationText(Integer fromID,Integer toID,Integer postID);
 	ArrayList<NotificationModel> getNotificationText(Integer UserID);
 	
  	

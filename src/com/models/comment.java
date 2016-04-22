@@ -68,10 +68,10 @@ public class comment implements NotificationModel {
 	// }
 
 
-	public void addNotificationText(Integer fromID, Integer toID) {
+	public void addNotificationText(Integer fromID, Integer toID,Integer postID) {
 		// add to the table notification user id and notification id and sender
 		// id and text
-		String sql = "INSERT INTO `notification`(`NotfID`, `toID`, `FromID`, `Type`, `seen`, `text`)"
+		String sql = "INSERT INTO `notification`(`NotfID`, `toID`, `FromID`,`postID`, `Type`, `seen`, `text`)"
 				+ " VALUES (NULL,?,?,?,?,?)";
 		Connection conn = DBConnection.getActiveConnection();
 		PreparedStatement stmt;
@@ -79,9 +79,10 @@ public class comment implements NotificationModel {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, toID);
 			stmt.setInt(2, fromID);
-			stmt.setInt(3, 0);// Zero inducate comment type ...
-			stmt.setInt(4, 0);// Zero inducate unseen...
-			stmt.setString(5, notificationText);
+			stmt.setInt(3, postID);
+			stmt.setInt(4, 0);// Zero inducate comment type ...
+			stmt.setInt(5, 0);// Zero inducate unseen...
+			stmt.setString(6, notificationText);
 			System.out.println(stmt.toString());
 			stmt.execute();
 		} catch (SQLException e) {

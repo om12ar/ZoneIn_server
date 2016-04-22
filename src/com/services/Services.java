@@ -381,7 +381,7 @@ public class Services {
 	@POST
 	@Path("/sendLike")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID)
+	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post") Integer postID )
 	{
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new Like ();
@@ -389,7 +389,7 @@ public class Services {
 		int number=notification1.getnumberofNotification(toID);
 		notification1.addUserID(toID);
 
-		notification1.addNotificationText(fromID, toID);
+		notification1.addNotificationText(fromID, toID,postID);
 
 		jsons.put("you have ", (number+" notification "));
 
@@ -492,7 +492,7 @@ public class Services {
 	@POST
 	@Path("/sendnotification")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("txt")String commnt)
+	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post")Integer postID,@FormParam("txt")String commnt)
 	{
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new comment(commnt);
@@ -500,7 +500,7 @@ public class Services {
 		int number=notification1.getnumberofNotification(toID);
 		notification1.addUserID(toID);
 
-		notification1.addNotificationText(fromID, toID);
+		notification1.addNotificationText(fromID, toID,postID);
 
 		jsons.put("you have ", (number+" notification "));
 
