@@ -8,13 +8,16 @@ import java.util.ArrayList;
 
 import com.mysql.jdbc.Statement;
 
-public class Place {
+public class Place  {
 
 	private int ID;
 	private String name;
 	private double longitude;
 	private double latitude;
 	private String description;
+	private double rating;
+	private int numberOfCheckins;
+
 
 	public Place(int iD, String name, double longitude, double latitude, String description) {
 		super();
@@ -69,6 +72,16 @@ public class Place {
 		this.description = description;
 	}
 
+	public double getRating() {
+		getPlaceByID(ID);
+
+		return rating;
+	}
+
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
+
 	public static Place addPlace(String name, String description, double longitude, double latitude) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -115,6 +128,8 @@ public class Place {
 				place.name = rs.getString("name");
 				place.latitude = rs.getDouble("lat");
 				place.longitude = rs.getDouble("long");
+				place.rating = rs.getDouble("rating");
+				place.numberOfCheckins = rs.getInt("checkins"); 
 				return place;
 			}
 			return null;
@@ -124,7 +139,7 @@ public class Place {
 		}
 		return null;
 	}
-	
+
 	public static checkinComment getCommentByID(int id) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -134,11 +149,11 @@ public class Place {
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				checkinComment comment = new checkinComment (); 
+				checkinComment comment = new checkinComment();
 				comment.ID = rs.getInt(1);
 				comment.checkinID = rs.getInt("checkinID");
 				comment.comment = rs.getString("comment");
-				
+
 				return comment;
 			}
 			return null;
@@ -163,6 +178,7 @@ public class Place {
 				places.add(place);
 
 			}
+
 			return places;
 		}
 
@@ -174,34 +190,66 @@ public class Place {
 
 	}
 
-	public static boolean checkIn(int placeID, int userID, String review) {
+	public static boolean checkIn(int placeID, int userID, String review, double rating) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Insert into checkin (`placeID`,`userID`, `review`) VALUES  (?,?,?)";
+			String sql = "Insert into checkin (`placeID`,`userID`, `review` , `rating`) VALUES  (?,?,?,?)";
 
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, placeID);
 			stmt.setInt(2, userID);
-			stmt.setString(3,review);
+			stmt.setString(3, review);
+			stmt.setDouble(4, rating);
 			stmt.executeUpdate();
 
 			Place place = Place.getPlaceByID(placeID);
 			double newLongitude = place.getLongitude();
 			double newLatitude = place.getLatitude();
 			UserModel.updateUserPosition(userID, newLatitude, newLongitude);
-
+			boolean flag = false;
 			ResultSet rs = stmt.getGeneratedKeys();
-			if (rs.next()) {
-				return true;
-			}
-			return false;
+
+			String sql2 = "update `places` set `checkins` = `checkins` + 1 where `id` = ?";
+			PreparedStatement stmt2;
+			stmt2 = conn.prepareStatement(sql2);
+			stmt2.setInt(1, placeID);
+			stmt2.executeUpdate();
+
+			double averageRating = getAverageRating(placeID);
+			String sql3 = "update places set rating = ? where  id = ?";
+			PreparedStatement stmt3;
+			stmt3 = conn.prepareStatement(sql3);
+			stmt3.setDouble(1, averageRating);
+			stmt3.setInt(2, placeID);
+			stmt3.executeUpdate();
+
+			return true; 
+
+			//			if (rs2.next()) {
+			//				 checkins = rs2.getInt(1);
+			//				 flag = true;
+			//			}
+			//			
+			//			String sql3 = "update places set checkins = ? where id = ?";
+			//			PreparedStatement stmt3;
+			//			stmt3 = conn.prepareStatement(sql3);
+			//			stmt3.setInt(1, checkins);
+			//			stmt3.setInt(2, placeID);
+			//			stmt3.executeUpdate();
+			//			
+			//			if (flag) return true;
+
 		} catch (SQLException e) {
 
 			e.printStackTrace();
 		}
 		return false;
 	}
+
+
+	
+
 
 	public static boolean comment(int checkinID, String comment) {
 
@@ -222,10 +270,10 @@ public class Place {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false; 
+		return false;
 	}
 
-	public static boolean like (int checkinID){
+	public static boolean like(int checkinID) {
 
 		Connection conn = DBConnection.getActiveConnection();
 		String sql = "update `checkin` set `likes` = `likes` + 1 where `id` = ?";
@@ -234,27 +282,27 @@ public class Place {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, checkinID);
 			stmt.executeUpdate();
-			return true; 
-		}catch (SQLException e) {
+			return true;
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	public static ArrayList<checkinComment> getComments(int checkinID ) {
+	public static ArrayList<checkinComment> getComments(int checkinID) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "Select * from comment where `checkinID` = ? ";
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, checkinID);
-			ArrayList <checkinComment> comments = new ArrayList<checkinComment>(); 
+			ArrayList<checkinComment> comments = new ArrayList<checkinComment>();
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				checkinComment comment = getCommentByID(rs.getInt(1));
-				comments.add(comment); 
-				return comments; 
-				
+				comments.add(comment);
+				return comments;
+
 			}
 			return null;
 		} catch (SQLException e) {
@@ -263,8 +311,68 @@ public class Place {
 		}
 		return null;
 	}
-	
-	
+
+	public static boolean setAverageRating (int userID , int placeID , double newRating){
+
+		Place place = getPlaceByID(placeID); 
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "Insert into place_rating VALUES  (?,?,?)";
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, userID);
+			stmt.setInt(2, placeID);
+			stmt.setDouble(3, newRating);
+			stmt.executeUpdate();
+
+			double rating = getAverageRating(placeID);
+			String sql2 = "update places set rating = ? where  id = ?";
+			PreparedStatement stmt2;
+			stmt2 = conn.prepareStatement(sql2);
+			stmt2.setDouble(1, rating);
+			stmt2.setInt(2, placeID);
+			stmt2.executeUpdate();
+			return true; 
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+
+		return false; 
+
 	}
+
+	public static double getAverageRating(int placeID) {
+
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "select AVG(rating) from `checkin` where placeID = ? ";
+		double rating;
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, placeID);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				rating = rs.getDouble(1);
+				return rating;
+			}
+		}catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return 0.0; 
+	}
+
+	public int getNumberOfCheckins() {
+		return numberOfCheckins;
+	}
+
+	public void setNumberOfCheckins(int numberOfCheckins) {
+		this.numberOfCheckins = numberOfCheckins;
+	}
+
+
+}
 
 

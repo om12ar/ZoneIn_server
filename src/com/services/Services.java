@@ -22,12 +22,7 @@ import org.json.simple.JSONObject;
 
 //import com.models.DBConnection;
 //import com.models.UserModel;
-import com.models.*; 
-
-import com.models.DBConnection;
-import com.models.NotificationModel;
-import com.models.UserModel;
-import com.models.comment;
+import com.models.*;
 
 
 @Path("/")
@@ -271,7 +266,7 @@ public class Services {
 	}
 
 	@POST 
-	@Path("/saveplaces")
+	@Path("/saveplace")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String SavePlace(@FormParam("userID")Integer id,@FormParam("placeID") Integer placeid)
 	{
@@ -311,7 +306,7 @@ public class Services {
 	public String getPlaces()
 	{
 		JSONObject jsons=new JSONObject();
-		ArrayList<Place> places = new ArrayList<>(Place.getAllPlaces()) ;
+		ArrayList<Place> places = Place.getAllPlaces() ;
 		if(places.size()!=0){			
 			JSONArray jsArray = new JSONArray();
 			JSONObject jObject = new JSONObject();
@@ -340,8 +335,8 @@ public class Services {
 	@Path("/checkIn")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String checkIn(@FormParam("placeID") int placeID,
-			@FormParam("userID") int userID, @FormParam("review") String review) {
-		Boolean status = Place.checkIn(placeID, userID, review); 
+			@FormParam("userID") int userID, @FormParam("review") String review, @FormParam("rating") double rating) {
+		Boolean status = Place.checkIn(placeID, userID, review, rating); 
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -381,7 +376,7 @@ public class Services {
 	@POST
 	@Path("/sendLike")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post") Integer postID )
+	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID)
 	{
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new Like ();
@@ -389,7 +384,7 @@ public class Services {
 		int number=notification1.getnumberofNotification(toID);
 		notification1.addUserID(toID);
 
-		notification1.addNotificationText(fromID, toID,postID);
+		notification1.addNotificationText(fromID, toID);
 
 		jsons.put("you have ", (number+" notification "));
 
@@ -492,7 +487,7 @@ public class Services {
 	@POST
 	@Path("/sendnotification")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post")Integer postID,@FormParam("txt")String commnt)
+	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("txt")String commnt)
 	{
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new comment(commnt);
@@ -500,7 +495,7 @@ public class Services {
 		int number=notification1.getnumberofNotification(toID);
 		notification1.addUserID(toID);
 
-		notification1.addNotificationText(fromID, toID,postID);
+		notification1.addNotificationText(fromID, toID);
 
 		jsons.put("you have ", (number+" notification "));
 
@@ -548,6 +543,26 @@ public class Services {
 		return json.toJSONString();
 	}
 
+	@POST
+	@Path("/rate")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String rate(@FormParam("userID") int userID , @FormParam("placeID") int placeID , @FormParam("rating") double rating) {
+		Boolean status = Place.setAverageRating(userID, placeID, rating);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+
+	@POST
+	@Path("/getRating")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getRating(@FormParam("placeID") int placeID) {
+		double rating = Place.getAverageRating(placeID);
+		JSONObject json = new JSONObject();
+		json.put("rating" , rating);
+		return json.toJSONString();
+	}
+
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -587,7 +602,102 @@ public class Services {
 		}
 	}
 
+	@POST 
+	@Path("/sortPlacesByRating")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String sortByRating()
+	{
+		JSONObject jsons=new JSONObject();
+		Context context = new Context(new SortByRating()); 
+		ArrayList<Place> places = context.sort();
+		if(places.size()!=0){			
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (Place place : places)
+			{
+				JSONObject placeJson = new JSONObject();
+				placeJson.put("id", place.getID());
+				placeJson.put("name", place.getName());
+				placeJson.put("description", place.getDescription());
+				placeJson.put("lat", place.getLatitude());
+				placeJson.put("long", place.getLongitude());
+				placeJson.put("rating", place.getRating());
+				placeJson.put("checkins", place.getNumberOfCheckins());
 
+				jsArray.add(placeJson);
+			}
+			jObject.put("placeList", jsArray);
 
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("String", " ");
+			return jsons.toJSONString();
+		}
+	}
+	@POST 
+	@Path("/sortPlacesByCheckins")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String sortByCheckins()
+	{
+		JSONObject jsons=new JSONObject();
+		Context context = new Context(new SortByCheckins()); 
+		ArrayList<Place> places = context.sort();
+		if(places.size()!=0){			
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (Place place : places)
+			{
+				JSONObject placeJson = new JSONObject();
+				placeJson.put("id", place.getID());
+				placeJson.put("name", place.getName());
+				placeJson.put("description", place.getDescription());
+				placeJson.put("lat", place.getLatitude());
+				placeJson.put("long", place.getLongitude());
+				placeJson.put("rating", place.getRating());
+				placeJson.put("checkins", place.getNumberOfCheckins());
+
+				jsArray.add(placeJson);
+			}
+			jObject.put("placeList", jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("String", " ");
+			return jsons.toJSONString();
+		}
+	}
+
+	@POST 
+	@Path("/getCheckinsByUser")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCheckins(@FormParam("placeID") int placeID)
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<Checkin> checkins = Checkin.getCheckins(placeID);
+		if(checkins.size()!=0){			
+			JSONArray jsArray = new JSONArray();
+			JSONObject jObject = new JSONObject();
+			for (Checkin checkin : checkins)
+			{
+				JSONObject checkinJson = new JSONObject();
+				checkinJson.put("id" , checkin.getCheckinID() );
+				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("review", checkin.getReview() );
+				checkinJson.put("rating", checkin.getRating() );
+				checkinJson.put("likes", checkin.getLikes());
+
+				jsArray.add(checkinJson);
+			}
+			jObject.put("placeList", jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("String", "nodata");
+			return jsons.toJSONString();
+		}
+	}
 }
 
