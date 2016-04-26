@@ -60,7 +60,7 @@ public class Checkin {
 	}
 	
 	
-	public static ArrayList<Checkin> getCheckins (int placeID){
+	public static ArrayList<Checkin> getCheckinsByPlace (int placeID){
 
 		Connection conn = DBConnection.getActiveConnection();
 		String sql = "select checkin.id , users.name , checkin.review , "

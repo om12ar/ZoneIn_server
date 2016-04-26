@@ -121,6 +121,7 @@ public class Services {
 	{
 		JSONObject jsons=new JSONObject();
 		ArrayList<UserModel> followers = new ArrayList<>(UserModel.getFollowersIDs(id)) ;
+		JSONArray jsArray = new JSONArray();
 		if(followers.size()!=0){
 			/*for(int i=0;i<followedby.length;i++)
 			{
@@ -132,7 +133,7 @@ public class Services {
 			System.out.println("Services.getFollowers()" + followers.toString());
 
 
-			JSONArray jsArray = new JSONArray();
+			
 			JSONObject jObject = new JSONObject();
 			for (UserModel user : followers)
 			{
@@ -151,7 +152,7 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", "nodata");
+			jsons.put("followersList", jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -163,10 +164,11 @@ public class Services {
 	{
 		JSONObject jsons=new JSONObject();
 		ArrayList<UserModel> users = new ArrayList<>(UserModel.getAllUsers()) ;
+		JSONArray jsArray = new JSONArray();
 		if(users.size()!=0){
 			System.out.println("Services.getAllUsers()" + users.toString());
 
-			JSONArray jsArray = new JSONArray();
+			
 			JSONObject jObject = new JSONObject();
 			for (UserModel user : users)
 			{
@@ -185,7 +187,7 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", "nodata");
+			jsons.put("userList", jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -197,9 +199,8 @@ public class Services {
 	{
 		JSONObject jsons=new JSONObject();
 		ArrayList<UserModel> followedByUser = new ArrayList<>(UserModel.getFollowedBy(id)) ;
-
-		if(followedByUser.size() > 0){
-			JSONArray jsArray = new JSONArray();
+		JSONArray jsArray = new JSONArray();
+		if(followedByUser.size() > 0){			
 			JSONObject jObject = new JSONObject();
 			for (UserModel user : followedByUser)
 			{
@@ -218,7 +219,7 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", "empty set");
+			jsons.put("followedByUser", jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -277,7 +278,7 @@ public class Services {
 	{
 		Boolean status = UserModel.savePlace(id,placeid);
 		JSONObject json = new JSONObject();
-		json.put("status", status ? "Done sucessfully" : "Failed to add");
+		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 
 	}
@@ -312,8 +313,8 @@ public class Services {
 	{
 		JSONObject jsons=new JSONObject();
 		ArrayList<Place> places = Place.getAllPlaces() ;
+		JSONArray jsArray = new JSONArray();
 		if(places.size()!=0){			
-			JSONArray jsArray = new JSONArray();
 			JSONObject jObject = new JSONObject();
 			for (Place place : places)
 			{
@@ -331,7 +332,7 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", "nodata");
+			jsons.put("placeList" , jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -358,8 +359,9 @@ public class Services {
 		ArrayList<NotificationModel> userNotification =
 				new ArrayList<>(notification1.getNotificationText(ID)) ;
 		userNotification.addAll(notification2.getNotificationText(ID));
+		JSONArray jsArray = new JSONArray();
 		if(userNotification.size() > 0){
-			JSONArray jsArray = new JSONArray();
+			
 			JSONObject jObject = new JSONObject();
 			for (NotificationModel user:userNotification)
 			{
@@ -369,12 +371,12 @@ public class Services {
 				jsArray.add(userJson);
 
 			}
-			jObject.put("UserNotication: " , jsArray);
+			jObject.put("UserNotication" , jsArray);
 
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("No New", "Notification");
+			jsons.put("UserNotication", jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -408,8 +410,9 @@ public class Services {
 		ArrayList<NotificationModel> userNotification =
 				new ArrayList<>(notification1.getNotificationText(ID)) ;
 		//System.out.println(userNotification.size());
+		JSONArray jsArray = new JSONArray();
 		if(userNotification.size() > 0){
-			JSONArray jsArray = new JSONArray();
+			
 			JSONObject jObject = new JSONObject();
 			System.out.println("Service okai");
 			for (int i=0;i<userNotification.size();i++)
@@ -422,12 +425,12 @@ public class Services {
 				jsArray.add(userJson);
 				//	System.out.println(jsArray);
 			}
-			jObject.put("UserNotication: " , jsArray);
+			jObject.put("UserNotication" , jsArray);
 			//System.out.println(jObject.toJSONString());
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("No New", "Notification");
+			jsons.put("UserNotication", jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -583,9 +586,9 @@ public class Services {
 	public String getComments(@FormParam("checkinID") int checkinID)
 	{
 		JSONObject jsons=new JSONObject();
-		ArrayList<checkinComment> comments = new ArrayList<>(Place.getComments(checkinID));  
+		ArrayList<checkinComment> comments = new ArrayList<>(Place.getComments(checkinID));
+		JSONArray jsArray = new JSONArray();
 		if(comments.size()!=0){			
-			JSONArray jsArray = new JSONArray();
 			JSONObject jObject = new JSONObject();
 			for (checkinComment comment : comments)
 			{
@@ -602,7 +605,7 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("comment", " ");
+			jsons.put("commentList", jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -615,8 +618,8 @@ public class Services {
 		JSONObject jsons=new JSONObject();
 		Context context = new Context(new SortByRating()); 
 		ArrayList<Place> places = context.sort();
+		JSONArray jsArray = new JSONArray();
 		if(places.size()!=0){			
-			JSONArray jsArray = new JSONArray();
 			JSONObject jObject = new JSONObject();
 			for (Place place : places)
 			{
@@ -636,7 +639,7 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", " ");
+			jsons.put("placeList",jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -648,8 +651,8 @@ public class Services {
 		JSONObject jsons=new JSONObject();
 		Context context = new Context(new SortByCheckins()); 
 		ArrayList<Place> places = context.sort();
+		JSONArray jsArray = new JSONArray();
 		if(places.size()!=0){			
-			JSONArray jsArray = new JSONArray();
 			JSONObject jObject = new JSONObject();
 			for (Place place : places)
 			{
@@ -669,24 +672,25 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", " ");
+			jsons.put("placeList", jsArray);
 			return jsons.toJSONString();
 		}
 	}
 
 	@POST 
-	@Path("/getCheckinsByUser")
+	@Path("/getCheckinsByPlace")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getCheckins(@FormParam("placeID") int placeID)
 	{
 		JSONObject jsons=new JSONObject();
-		ArrayList<Checkin> checkins = Checkin.getCheckins(placeID);
+		ArrayList<Checkin> checkins = Checkin.getCheckinsByPlace(placeID);
+		JSONArray jsArray = new JSONArray();
 		if(checkins.size()!=0){			
-			JSONArray jsArray = new JSONArray();
 			JSONObject jObject = new JSONObject();
 			for (Checkin checkin : checkins)
 			{
 				JSONObject checkinJson = new JSONObject();
+				
 				checkinJson.put("id" , checkin.getCheckinID() );
 				checkinJson.put("username", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
@@ -700,7 +704,7 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", "nodata");
+			jsons.put("placeList", jsArray);
 			return jsons.toJSONString();
 		}
 	}
