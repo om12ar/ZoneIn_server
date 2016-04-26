@@ -234,7 +234,7 @@ public class Services {
 		ArrayList<Integer> UserSavedPlaces = new ArrayList<>(UserModel.getsavePlace(id)) ;
 		JSONArray jsArray = new JSONArray();
 		if(UserSavedPlaces.size() > 0){
-			
+			System.out.println(" I can do it ");
 			JSONObject jObject = new JSONObject();
 			for (Integer user : UserSavedPlaces)
 			{
@@ -249,7 +249,7 @@ public class Services {
 				
 				jsArray.add(userJson);
 			}
-			jObject.put("SavedPlaces" , jsArray);
+			jObject.put("SavedPlacesAre" , jsArray);
 
 			return jObject.toJSONString();
 		}
