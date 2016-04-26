@@ -209,7 +209,7 @@ public class Services {
 				userJson.put("pass", user.getPass());
 				userJson.put("email", user.getEmail());
 				userJson.put("lat", user.getLat());
-				userJson.put("lon", user.getLon());
+				userJson.put("long", user.getLon());
 
 				jsArray.add(userJson);
 			}
@@ -231,23 +231,23 @@ public class Services {
 
 		JSONObject jsons=new JSONObject();
 		ArrayList<Integer> UserSavedPlaces = new ArrayList<>(UserModel.getsavePlace(id)) ;
-
+		JSONArray jsArray = new JSONArray();
 		if(UserSavedPlaces.size() > 0){
-			JSONArray jsArray = new JSONArray();
+			
 			JSONObject jObject = new JSONObject();
 			for (Integer user : UserSavedPlaces)
 			{
 				JSONObject userJson = new JSONObject();
-				userJson.put("Place id: ", user);
+				userJson.put("id", user);
 
 				jsArray.add(userJson);
 			}
-			jObject.put("UserSavedPlaces:" , jsArray);
+			jObject.put("SavedPlaces" , jsArray);
 
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("String", "empty set");
+			jsons.put("SavedPlaces", jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -258,7 +258,7 @@ public class Services {
 	@Path("/addplace")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String addPlace(@FormParam("name") String name,
-			@FormParam("description") String description, @FormParam("lon") double longitude, @FormParam("lat") double latitude) {
+			@FormParam("description") String description, @FormParam("long") double longitude, @FormParam("lat") double latitude) {
 		Place place = Place.addPlace(name, description, longitude, latitude); 
 
 		JSONObject json = new JSONObject();
