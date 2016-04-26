@@ -72,7 +72,7 @@ public class Like implements NotificationModel {
 	public void addNotificationText(Integer fromID, Integer toID, Integer postID) {
 		// add to the table notification user id and notification id and sender
 		// id and text
-		String sql = "INSERT INTO `notification`(`NotfID`, `toID`, `FromID`,`postID`, `Type`, `seen`, `txt`)"
+		String sql = "INSERT INTO `notification`(`notfID`, `toID`, `FromID`,`postID`,`seen`, `type`,  `txt`)"
 				+ " VALUES (NULL,?,?,?,?,?,?)";
 		Connection conn = DBConnection.getActiveConnection();
 		PreparedStatement stmt;
@@ -81,9 +81,9 @@ public class Like implements NotificationModel {
 			stmt.setInt(1, toID);
 			stmt.setInt(2, fromID);
 			stmt.setInt(3, postID);// 1 inducate Like type ...
-			stmt.setInt(4, 1);// Zero inducate unseen...
+			stmt.setInt(4, 0);// Zero inducate unseen...
 			notificationText=fromID+"Likes your checkin "+toID+"Post";
-			stmt.setInt(5, 0);
+			stmt.setInt(5, 1);
 			stmt.setString(6, notificationText);
 			System.out.println(stmt.toString());
 			stmt.execute();
