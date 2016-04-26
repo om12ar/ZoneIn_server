@@ -239,7 +239,15 @@ public class Services {
 			for (Integer user : UserSavedPlaces)
 			{
 				JSONObject userJson = new JSONObject();
+				Place place=Place.getPlaceByID(user);
 				userJson.put("id", user);
+				userJson.put("name",place.getName());
+				userJson.put("description", place.getDescription());
+				userJson.put("rating", place.getRating());
+				userJson.put("Lat",place.getLatitude());
+				userJson.put("Long", place.getLongitude());
+				
+				
 
 				jsArray.add(userJson);
 			}
