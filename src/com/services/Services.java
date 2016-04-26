@@ -714,5 +714,37 @@ public class Services {
 			return jsons.toJSONString();
 		}
 	}
+	
+	@POST 
+	@Path("/getCheckinsByUser")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCheckinsByUser(@FormParam("userID") int userID)
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<Checkin> checkins = Checkin.getCheckinsByUser(userID);
+		JSONArray jsArray = new JSONArray();
+		if(checkins.size()!=0){			
+			JSONObject jObject = new JSONObject();
+			for (Checkin checkin : checkins)
+			{
+				JSONObject checkinJson = new JSONObject();
+				
+				checkinJson.put("id" , checkin.getCheckinID() );
+				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("review", checkin.getReview() );
+				checkinJson.put("rating", checkin.getRating() );
+				checkinJson.put("likes", checkin.getLikes());
+
+				jsArray.add(checkinJson);
+			}
+			jObject.put("placeList", jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("placeList", jsArray);
+			return jsons.toJSONString();
+		}
+	}
 }
 

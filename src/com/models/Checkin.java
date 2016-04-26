@@ -91,6 +91,38 @@ public class Checkin {
 		}
 		return null; 
 	}
+	
+	public static ArrayList<Checkin> getCheckinsByUser (int userID){
+
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "select checkin.id , users.name , checkin.review , "
+				+ "checkin.rating ,checkin.likes from users inner join checkin "
+				+ " on checkin.userID = users.id "
+				+ " where checkin.userID = ? ";
+
+		PreparedStatement stmt; 
+		try {
+			stmt = conn.prepareStatement(sql); 
+			stmt.setInt(1, userID);
+			ResultSet rs = stmt.executeQuery();
+			ArrayList<Checkin> checkins = new ArrayList<Checkin>(); 
+			while (rs.next()){
+				Checkin checkin = new Checkin (); 
+				checkin.checkinID = rs.getInt(1); 
+				checkin.userName = rs.getString(2); 
+				checkin.review = rs.getString(3); 
+				checkin.rating = rs.getFloat(4); 
+				checkin.likes = rs.getInt(5); 
+				checkins.add(checkin);
+			}
+			return checkins;
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return null; 
+	}
 
 
 }
