@@ -247,8 +247,6 @@ public class Services {
 				userJson.put("Lat",place.getLatitude());
 				userJson.put("Long", place.getLongitude());
 				
-				
-
 				jsArray.add(userJson);
 			}
 			jObject.put("SavedPlaces" , jsArray);
