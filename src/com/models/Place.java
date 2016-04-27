@@ -254,6 +254,9 @@ public class Place  {
 		return 0.0; 
 	}
 
+
+
+
 	
 	
 

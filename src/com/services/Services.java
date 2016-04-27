@@ -557,6 +557,17 @@ public class Services {
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 	}
+	
+	@POST
+	@Path("/unsavePlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String unsavePlace(@FormParam("placeID") int placeID,@FormParam("userID") int id) {
+		NotificationHandler notificationHandler=new UserModel();
+		Boolean status = Undo.exec(placeID, notificationHandler,id);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
 
 	@POST
 	@Path("/rate")

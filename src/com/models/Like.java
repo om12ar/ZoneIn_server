@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import org.glassfish.jersey.server.ParamException.QueryParamException;
 
-public class Like extends NotificationModel {
+public class Like extends NotificationModel implements NotificationHandler {
 	public Integer user = 0;
 	public Integer NotfID=0;
 	public String notificationText;
@@ -115,6 +115,26 @@ public class Like extends NotificationModel {
 	public String toString() {
 		return notificationText;
 		
+	}
+
+	@Override
+	public boolean undo(int objID,int userID) {
+		// TODO Auto-generated method stub
+		String sql = "DELETE FROM `notification` WHERE `notification`.`notfID` = ?";
+		Connection conn = DBConnection.getActiveConnection();
+		PreparedStatement stmt;
+		//ArrayList<NotificationModel> notf=new ArrayList<NotificationModel>();
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, objID);
+			
+			return stmt.execute();
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

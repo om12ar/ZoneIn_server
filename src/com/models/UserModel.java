@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import com.mysql.jdbc.Statement;
 
-public class UserModel {
+public class UserModel implements NotificationHandler{
 
 	
 	private String name;
@@ -420,6 +420,27 @@ public class UserModel {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	
+	public boolean undo(int objID,int userid) {
+		// TODO Auto-generated method stub
+		String sql = "DELETE FROM `user_place` WHERE `userID` = ? AND `placeID` =? ";
+		Connection conn = DBConnection.getActiveConnection();
+		PreparedStatement stmt;
+		//ArrayList<NotificationModel> notf=new ArrayList<NotificationModel>();
+		try {
+			stmt = conn.prepareStatement(sql);
+			
+			stmt.setInt(1, userid);
+			stmt.setInt(2, objID);
+			return stmt.execute();
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 }
