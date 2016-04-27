@@ -56,7 +56,7 @@ public abstract class NotificationModel {
 	public abstract void  addNotificationText(Integer fromID,Integer toID,Integer postID);
 	public static ArrayList<NotificationModel> getNotificationText(Integer UserID){
 		
-			//System.out.println("Hello");
+		
 			String sql = "SELECT `notfID`,  `FromID`,  `txt` FROM `notification` "
 					+ "WHERE `seen`=0 AND `toID`=?";
 			Connection conn = DBConnection.getActiveConnection();
@@ -65,7 +65,7 @@ public abstract class NotificationModel {
 			try {
 				stmt = conn.prepareStatement(sql);
 				stmt.setInt(1, UserID);
-				System.out.println(stmt);
+				//System.out.println(stmt);
 				ResultSet rs = stmt.executeQuery();
 				
 				while (rs.next()) {
@@ -77,7 +77,7 @@ public abstract class NotificationModel {
 					notf.add(temp);
 					
 					temp.updateSeenofNotification(temp.NotfID);
-
+					updatenumberofNotification(UserID);
 				}
 				//System.out.println("OKai");
 				return notf;
@@ -87,9 +87,23 @@ public abstract class NotificationModel {
 			}
 			return null;
 		}
-		
+
+	private static void updatenumberofNotification(int UserID) {
+		// TODO Auto-generated method stub
+		String sql = "UPDATE `users` SET `numberofnotification` = '0' WHERE `users`.`id` = ?";
+		Connection conn = DBConnection.getActiveConnection();
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, UserID);
+			
+			ResultSet rs = stmt.executeQuery();
+	}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
- 	
+}
 
 

@@ -67,7 +67,7 @@ public class Comment extends NotificationModel {
 	public void addNotificationText(Integer fromID, Integer toID,Integer postID) {
 		// add to the table notification user id and notification id and sender
 		// id and text
-		String sql = "INSERT INTO `notification`(`NotfID`, `toID`, `FromID`,`postID`, `Type`, `seen`, `text`)"
+		String sql = "INSERT INTO `notification`(`notfID`, `toID`, `FromID`,`postID`,`seen`, `type` `text`)"
 				+ " VALUES (NULL,?,?,?,?,?)";
 		Connection conn = DBConnection.getActiveConnection();
 		PreparedStatement stmt;

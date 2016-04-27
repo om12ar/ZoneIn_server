@@ -389,12 +389,13 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post") Integer postID )
 	{
+		System.out.println("Hello");
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new Like ();
-
+		System.out.println("till now okai");
 		int number=notification1.getnumberofNotification(toID);
 		notification1.addUserID(toID);
-
+		System.out.println("not okai");
 		notification1.addNotificationText(fromID, toID,postID);
 
 		jsons.put("you have ", (number+" notification "));
@@ -497,7 +498,7 @@ public class Services {
 		}
 	}
 	@POST
-	@Path("/sendnotification")
+	@Path("/sendcomment")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post")Integer postID,@FormParam("txt")String commnt)
 	{
