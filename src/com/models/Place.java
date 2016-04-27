@@ -82,6 +82,14 @@ public class Place  {
 		this.rating = rating;
 	}
 
+	public int getNumberOfCheckins() {
+		return numberOfCheckins;
+	}
+
+	public void setNumberOfCheckins(int numberOfCheckins) {
+		this.numberOfCheckins = numberOfCheckins;
+	}
+	
 	public static Place addPlace(String name, String description, double longitude, double latitude) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -140,7 +148,7 @@ public class Place  {
 		return null;
 	}
 
-	public static checkinComment getCommentByID(int id) {
+	public static CheckinComment getCommentByID(int id) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "Select * from comment where `id` = ? ";
@@ -149,7 +157,7 @@ public class Place  {
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				checkinComment comment = new checkinComment();
+				CheckinComment comment = new CheckinComment();
 				comment.ID = rs.getInt(1);
 				comment.checkinID = rs.getInt("checkinID");
 				comment.comment = rs.getString("comment");
@@ -193,53 +201,6 @@ public class Place  {
 	
 	
 
-
-	public static boolean comment(int checkinID, String comment) {
-
-		Connection conn = DBConnection.getActiveConnection();
-		String sql = "Insert into comment (`checkinID`,`comment`) VALUES  (?,?)";
-		try {
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			stmt.setInt(1, checkinID);
-			stmt.setString(2, comment);
-			stmt.executeUpdate();
-
-			ResultSet rs = stmt.getGeneratedKeys();
-			if (rs.next()) {
-				return true;
-			}
-			return false;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	
-
-	public static ArrayList<checkinComment> getComments(int checkinID) {
-		try {
-			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Select * from comment where `checkinID` = ? ";
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, checkinID);
-			ArrayList<checkinComment> comments = new ArrayList<checkinComment>();
-			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
-				checkinComment comment = getCommentByID(rs.getInt(1));
-				comments.add(comment);
-				return comments;
-
-			}
-			return null;
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	public static boolean setAverageRating (int userID , int placeID , double newRating){
 
@@ -294,13 +255,7 @@ public class Place  {
 	}
 
 	
-	public int getNumberOfCheckins() {
-		return numberOfCheckins;
-	}
-
-	public void setNumberOfCheckins(int numberOfCheckins) {
-		this.numberOfCheckins = numberOfCheckins;
-	}
+	
 
 
 }

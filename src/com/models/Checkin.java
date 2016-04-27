@@ -226,6 +226,72 @@ public class Checkin {
 	}
 	
 
+	public static boolean comment(int checkinID, String comment) {
+
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "Insert into comment (`checkinID`,`comment`) VALUES  (?,?)";
+		try {
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, checkinID);
+			stmt.setString(2, comment);
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	
+	public static boolean uncomment (int commentID){
+		
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "delete from `comment` where `comment`.`id` = ? ";
+		try{
+			PreparedStatement stmt; 
+			stmt = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, commentID);
+			stmt.executeUpdate();
+		
+			return true; 
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return false;
+	}
+
+	public static ArrayList<CheckinComment> getComments(int checkinID) {
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Select * from comment where `checkinID` = ? ";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, checkinID);
+			ArrayList<CheckinComment> comments = new ArrayList<CheckinComment>();
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				CheckinComment comment = Place.getCommentByID(rs.getInt(1));
+				comments.add(comment);
+				return comments;
+
+			}
+			return null;
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
 
 
 }
