@@ -350,12 +350,13 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getallnotification(@FormParam("ID")Integer ID)
 	{
+		//System.out.println("Hello");
 		JSONObject jsons=new JSONObject();
-		NotificationModel notification1=new Comment("");
-		NotificationModel notification2=new Like();
+		//NotificationModel notification1=new Comment("");
+		//NotificationModel notification2=new Like();
 		ArrayList<NotificationModel> userNotification =
-				new ArrayList<>(notification1.getNotificationText(ID)) ;
-		userNotification.addAll(notification2.getNotificationText(ID));
+				new ArrayList<>(NotificationModel.getNotificationText(ID)) ;
+		//userNotification.addAll(notification2.getNotificationText(ID));
 		JSONArray jsArray = new JSONArray();
 		if(userNotification.size() > 0){
 			
@@ -363,17 +364,23 @@ public class Services {
 			for (NotificationModel user:userNotification)
 			{
 				JSONObject userJson = new JSONObject();
-				userJson.put("Notification",user.toString());
-
+				
+				
+				userJson.put("notfid", user.getNotfID());
+				
+				userJson.put("FromID",user.getUser());
+				
+				userJson.put("txt", user.getNotificationText());
+				
 				jsArray.add(userJson);
 
 			}
-			jObject.put("UserNotication" , jsArray);
+			jObject.put("notification" , jsArray);
 
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("UserNotication", jsArray);
+			jsons.put("notication", jsArray);
 			return jsons.toJSONString();
 		}
 	}
@@ -507,26 +514,7 @@ public class Services {
 		return jsons.toJSONString();	
 	}
 
-	@POST
-	@Path("/getAllNotification")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getAllNotification(@FormParam("ID")Integer id)
-	{
-		JSONObject jsons=new JSONObject();
-		String comments =getCommentnote(id);
-		String likes=getLikenote(id);
-		if(comments.contains("No New")&&likes.contains("No New")){
-			jsons.put("", "No New Notification");
-		}
-		if(!comments.contains("No New")){
-			System.out.println();
-			jsons.put("Comment Notification: ",comments);
-		}
-		if(!likes.contains("No New")){ 
-			jsons.put("Like Notification: ", likes);
-		}
-		return jsons.toJSONString();
-	}
+
 	@POST
 	@Path("/comment")
 	@Produces(MediaType.TEXT_PLAIN)

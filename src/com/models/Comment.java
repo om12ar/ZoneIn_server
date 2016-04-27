@@ -6,11 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Comment implements NotificationModel {
-	public Integer user = 0;
-	public Integer NotfID=0;
-	public String notificationText;
-
+public class Comment extends NotificationModel {
 	public Comment(String txt) {
 		notificationText = txt;
 	}
@@ -91,45 +87,6 @@ public class Comment implements NotificationModel {
 		notifyUser();
 	}
 
-	@Override
-	public ArrayList<NotificationModel> getNotificationText(Integer UserID) {
-		System.out.println("userID: " + UserID);
-		// TODO Auto-generated method stub
-		// search in database for the user ID
-		String sql = "SELECT `NotfID`,  `FromID`,  `text` FROM `notification` WHERE `seen`=0 AND `Type`=0 AND `toID`=?";
-		Connection conn = DBConnection.getActiveConnection();
-		PreparedStatement stmt;
-		ArrayList<NotificationModel> notf=new ArrayList<NotificationModel>();
-		try {
-			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, UserID);
-			//System.out.println(stmt);
-			ResultSet rs = stmt.executeQuery();
-			//System.out.println(rs.next());
-			//String s;
-			//ArrayList<String> notftxt= new ArrayList<>();
-			while (rs.next()) {
-			
-				Comment temp = new Comment("");
-				temp.NotfID=rs.getInt(1);
-				temp.user=rs.getInt(2);
-				temp.notificationText=rs.getString(3);
-				notf.add(temp);
-				//System.out.println("Comment.getNotification()"
-					//	+ temp.toString());
-				//System.out.println("Not OKAI");
-				updateSeenofNotification(temp.NotfID);
-
-			}
-			//System.out.println("OKai");
-			return notf;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	public void updateSeenofNotification(int ID)
 	{
 		String sql = "UPDATE `notification` SET"

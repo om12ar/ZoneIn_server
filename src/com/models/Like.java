@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import org.glassfish.jersey.server.ParamException.QueryParamException;
 
-public class Like implements NotificationModel {
+public class Like extends NotificationModel {
 	public Integer user = 0;
 	public Integer NotfID=0;
 	public String notificationText;
@@ -93,41 +93,6 @@ public class Like implements NotificationModel {
 		notifyUser();
 	}
 
-	@Override
-	public ArrayList<NotificationModel> getNotificationText(Integer UserID) {
-		//System.out.println("userID: " + UserID);
-		// TODO Auto-generated method stub
-		// search in database for the user ID
-		String sql = "SELECT `NotfID`,  `FromID`,  `text` FROM `notification` "
-				+ "WHERE `seen`=0 AND `Type`=1 AND `toID`=?";
-		Connection conn = DBConnection.getActiveConnection();
-		PreparedStatement stmt;
-		ArrayList<NotificationModel> notf=new ArrayList<NotificationModel>();
-		try {
-			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, UserID);
-			
-			ResultSet rs = stmt.executeQuery();
-			
-			while (rs.next()) {
-			
-				Comment temp = new Comment("");
-				temp.NotfID=rs.getInt(1);
-				temp.user=rs.getInt(2);
-				temp.notificationText=rs.getString(3);
-				notf.add(temp);
-				
-				updateSeenofNotification(temp.NotfID);
-
-			}
-			//System.out.println("OKai");
-			return notf;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 	
 	public static void updateSeenofNotification(int ID)
 	{
