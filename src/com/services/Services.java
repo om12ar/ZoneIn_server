@@ -123,8 +123,6 @@ public class Services {
 		ArrayList<UserModel> followers = new ArrayList<>(UserModel.getFollowersIDs(id)) ;
 		JSONArray jsArray = new JSONArray();
 		if(followers.size()!=0){		
-			System.out.println("Services.getFollowers()" + followers.toString());
-			
 			JSONObject jObject = new JSONObject();
 			for (UserModel user : followers)
 			{
@@ -225,7 +223,7 @@ public class Services {
 		ArrayList<Integer> UserSavedPlaces = new ArrayList<>(UserModel.getsavePlace(id)) ;
 		JSONArray jsArray = new JSONArray();
 		if(UserSavedPlaces.size() > 0){
-			System.out.println(" I can do it ");
+			
 			JSONObject jObject = new JSONObject();
 			for (Integer user : UserSavedPlaces)
 			{
@@ -240,7 +238,7 @@ public class Services {
 				
 				jsArray.add(userJson);
 			}
-			jObject.put("SavedPlaces" , jsArray);
+			jObject.put("SavedPlaces", jsArray);
 
 			return jObject.toJSONString();
 		}
@@ -294,7 +292,7 @@ public class Services {
 			return jsons.toJSONString();
 		}
 		else {
-			jsons.put("String", "empty set");
+			jsons.put("password", "empty set");
 			return jsons.toJSONString();
 		}
 	}
@@ -350,13 +348,11 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getallnotification(@FormParam("ID")Integer ID)
 	{
-		//System.out.println("Hello");
 		JSONObject jsons=new JSONObject();
-		//NotificationModel notification1=new Comment("");
-		//NotificationModel notification2=new Like();
+		
 		ArrayList<NotificationModel> userNotification =
 				new ArrayList<>(NotificationModel.getNotificationText(ID)) ;
-		//userNotification.addAll(notification2.getNotificationText(ID));
+		
 		JSONArray jsArray = new JSONArray();
 		if(userNotification.size() > 0){
 			
@@ -389,16 +385,16 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post") Integer postID )
 	{
-		System.out.println("Hello");
+		
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new Like ();
-		System.out.println("till now okai");
+	
 		int number=notification1.getnumberofNotification(toID);
 		notification1.addUserID(toID);
-		System.out.println("not okai");
+	
 		notification1.addNotificationText(fromID, toID,postID);
 
-		jsons.put("you have ", (number+" notification "));
+		jsons.put("NumberOfnotification", number);
 
 		return jsons.toJSONString();	
 	}
@@ -408,35 +404,35 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getCommentnote(@FormParam("ID")Integer ID)
 	{
-		//System.out.println("At the server : "+ID);
-		JSONObject jsons=new JSONObject();
-		NotificationModel notification1=new Comment("");
-
+		
+		//JSONObject jsons=new JSONObject();
+		JSONObject jObject = new JSONObject();
+		
 		ArrayList<NotificationModel> userNotification =
-				new ArrayList<>(notification1.getNotificationText(ID)) ;
-		//System.out.println(userNotification.size());
+				new ArrayList<>(NotificationModel.getNotificationText(ID)) ;
+		
 		JSONArray jsArray = new JSONArray();
 		if(userNotification.size() > 0){
 			
-			JSONObject jObject = new JSONObject();
-			System.out.println("Service okai");
+			
+		
 			for (int i=0;i<userNotification.size();i++)
 			{
 				Comment user=(Comment) userNotification.get(i);
 				JSONObject userJson = new JSONObject();
-				userJson.put("NotificationID: ", user.NotfID);
-				userJson.put("From user ID: ", user.user);
-				userJson.put("Notification Content: ", user.notificationText);
+				userJson.put("notfID", user.NotfID);
+				userJson.put("FromID", user.user);
+				userJson.put("txt", user.notificationText);
 				jsArray.add(userJson);
-				//	System.out.println(jsArray);
+				
 			}
-			jObject.put("UserNotication" , jsArray);
-			//System.out.println(jObject.toJSONString());
+			jObject.put("notication",jsArray);
+			
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("UserNotication", jsArray);
-			return jsons.toJSONString();
+			jObject.put("notication", jsArray);
+			return jObject.toJSONString();
 		}
 	}
 
@@ -460,18 +456,18 @@ public class Services {
 			{
 				Comment user=(Comment) userNotification.get(i);
 				JSONObject userJson = new JSONObject();
-				userJson.put("NotificationID: ", user.NotfID);
-				userJson.put("From user ID: ", user.user);
-				userJson.put("Notification Content: ", user.notificationText);
+				userJson.put("notfID", user.NotfID);
+				userJson.put("FromID", user.user);
+				userJson.put("txt", user.notificationText);
 				jsArray.add(userJson);
-				//	System.out.println(jsArray);
+				
 			}
-			jObject.put("UserNotication: " , jsArray);
-			//System.out.println(jObject.toJSONString());
+			jObject.put("notication" , jsArray);
+			
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("No New", "Notification");
+			jsons.put("notification", "empty set");
 			return jsons.toJSONString();
 		}
 	}
@@ -482,20 +478,15 @@ public class Services {
 	public String getnumberofnotification(@FormParam("userID")Integer ID)
 	{
 		JSONObject jsons=new JSONObject();
-		NotificationModel not1=new Comment("Hello");
+		NotificationModel not1=new Comment("");
 		int number=not1.getnumberofNotification(ID);
-		//System.out.println(password);
-		if(number!=0){
-			//JSONObject userJson = new JSONObject();
-			jsons.put("you have ", (number+" notification "));
-			//NotificationModel.addUserID(ID);
-			//NotificationModel.notifyUser();
-			return jsons.toJSONString();
-		}
-		else {
-			jsons.put("you have", "No notification");
-			return jsons.toJSONString();
-		}
+		
+			
+		jsons.put("numberOfNotification", number);
+			
+		return jsons.toJSONString();
+		
+		
 	}
 	@POST
 	@Path("/sendcomment")
@@ -510,7 +501,7 @@ public class Services {
 
 		notification1.addNotificationText(fromID, toID, postID);
 
-		jsons.put("you have ", (number+" notification "));
+		jsons.put("numberOFNotification", number);
 
 		return jsons.toJSONString();	
 	}
