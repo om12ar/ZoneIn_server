@@ -190,64 +190,7 @@ public class Place  {
 
 	}
 
-	public static boolean checkIn(int placeID, int userID, String review, double rating) {
-		try {
-			Connection conn = DBConnection.getActiveConnection();
-			String sql = "Insert into checkin (`placeID`,`userID`, `review` , `rating`) VALUES  (?,?,?,?)";
-
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			stmt.setInt(1, placeID);
-			stmt.setInt(2, userID);
-			stmt.setString(3, review);
-			stmt.setDouble(4, rating);
-			stmt.executeUpdate();
-
-			Place place = Place.getPlaceByID(placeID);
-			double newLongitude = place.getLongitude();
-			double newLatitude = place.getLatitude();
-			UserModel.updateUserPosition(userID, newLatitude, newLongitude);
-			boolean flag = false;
-			ResultSet rs = stmt.getGeneratedKeys();
-
-			String sql2 = "update `places` set `checkins` = `checkins` + 1 where `id` = ?";
-			PreparedStatement stmt2;
-			stmt2 = conn.prepareStatement(sql2);
-			stmt2.setInt(1, placeID);
-			stmt2.executeUpdate();
-
-			double averageRating = getAverageRating(placeID);
-			String sql3 = "update places set rating = ? where  id = ?";
-			PreparedStatement stmt3;
-			stmt3 = conn.prepareStatement(sql3);
-			stmt3.setDouble(1, averageRating);
-			stmt3.setInt(2, placeID);
-			stmt3.executeUpdate();
-
-			return true; 
-
-			//			if (rs2.next()) {
-			//				 checkins = rs2.getInt(1);
-			//				 flag = true;
-			//			}
-			//			
-			//			String sql3 = "update places set checkins = ? where id = ?";
-			//			PreparedStatement stmt3;
-			//			stmt3 = conn.prepareStatement(sql3);
-			//			stmt3.setInt(1, checkins);
-			//			stmt3.setInt(2, placeID);
-			//			stmt3.executeUpdate();
-			//			
-			//			if (flag) return true;
-
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-
+	
 	
 
 
@@ -273,21 +216,7 @@ public class Place  {
 		return false;
 	}
 
-	public static boolean like(int checkinID) {
-
-		Connection conn = DBConnection.getActiveConnection();
-		String sql = "update `checkin` set `likes` = `likes` + 1 where `id` = ?";
-		try {
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, checkinID);
-			stmt.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
+	
 
 	public static ArrayList<checkinComment> getComments(int checkinID) {
 		try {
@@ -364,6 +293,7 @@ public class Place  {
 		return 0.0; 
 	}
 
+	
 	public int getNumberOfCheckins() {
 		return numberOfCheckins;
 	}

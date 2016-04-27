@@ -330,7 +330,7 @@ public class Services {
 				placeJson.put("description", place.getDescription());
 				placeJson.put("lat", place.getLatitude());
 				placeJson.put("long", place.getLongitude());
-
+				placeJson.put("checkins", place.getNumberOfCheckins());
 				jsArray.add(placeJson);
 			}
 			jObject.put("placeList", jsArray);
@@ -348,7 +348,7 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String checkIn(@FormParam("placeID") int placeID,
 			@FormParam("userID") int userID, @FormParam("review") String review, @FormParam("rating") double rating) {
-		Boolean status = Place.checkIn(placeID, userID, review, rating); 
+		Boolean status = Checkin.checkIn(placeID, userID, review, rating); 
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -550,8 +550,18 @@ public class Services {
 	@POST
 	@Path("/like")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String like(@FormParam("checkinID") int checkinID) {
-		Boolean status = Place.like(checkinID);
+	public String like(@FormParam("checkinID") int checkinID , @FormParam("userID") int userID) {
+		Boolean status = Checkin.like(checkinID , userID);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/unlike")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String unlike(@FormParam("checkinID") int checkinID , @FormParam("userID") int userID) {
+		Boolean status = Checkin.unlike(checkinID , userID);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
