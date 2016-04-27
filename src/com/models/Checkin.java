@@ -5,11 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.mysql.jdbc.Statement;
 
 public class Checkin {
-	
+
 	protected int checkinID; 
 	protected int placeID; 
 	protected int userID; 
@@ -17,7 +19,7 @@ public class Checkin {
 	protected float rating; 
 	protected String review; 
 	protected int likes; 
-	
+
 	public int getCheckinID() {
 		return checkinID;
 	}
@@ -60,7 +62,7 @@ public class Checkin {
 	public void setLikes(int likes) {
 		this.likes = likes;
 	}
-	
+
 	public static boolean checkIn(int placeID, int userID, String review, double rating) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -105,8 +107,8 @@ public class Checkin {
 	}
 
 
-	
-	
+
+
 	public static ArrayList<Checkin> getCheckinsByPlace (int placeID){
 
 		Connection conn = DBConnection.getActiveConnection();
@@ -131,19 +133,19 @@ public class Checkin {
 				checkins.add(checkin);
 			}
 			return checkins;
-			
+
 		} catch (SQLException e) {
 
 			e.printStackTrace();
 		}
 		return null; 
 	}
-	
+
 	public static ArrayList<Checkin> getCheckinsByUser (int userID){
 
 		Connection conn = DBConnection.getActiveConnection();
-		String sql = "select checkin.id , users.name , checkin.review , "
-				+ "checkin.rating ,checkin.likes from users inner join checkin "
+		String sql = "select checkin.id , users.name ,checkin.review , "
+				+ "checkin.rating ,checkin.likes, checkin.placeID from users inner join checkin "
 				+ " on checkin.userID = users.id "
 				+ " where checkin.userID = ? ";
 
@@ -152,7 +154,8 @@ public class Checkin {
 			stmt = conn.prepareStatement(sql); 
 			stmt.setInt(1, userID);
 			ResultSet rs = stmt.executeQuery();
-			ArrayList<Checkin> checkins = new ArrayList<Checkin>(); 
+			ArrayList<Checkin> checkins = new ArrayList<Checkin>();
+
 			while (rs.next()){
 				Checkin checkin = new Checkin (); 
 				checkin.checkinID = rs.getInt(1); 
@@ -160,17 +163,18 @@ public class Checkin {
 				checkin.review = rs.getString(3); 
 				checkin.rating = rs.getFloat(4); 
 				checkin.likes = rs.getInt(5); 
+				checkin.placeID = rs.getInt(6);
 				checkins.add(checkin);
 			}
 			return checkins;
-			
+
 		} catch (SQLException e) {
 
 			e.printStackTrace();
 		}
 		return null; 
 	}
-	
+
 	public static boolean like(int checkinID, int userID) {
 
 		Connection conn = DBConnection.getActiveConnection();
@@ -181,23 +185,23 @@ public class Checkin {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, checkinID);
 			stmt.executeUpdate();
-			
+
 			PreparedStatement stmt2; 
 			stmt2 = conn.prepareStatement(sql2); 
 			stmt2.setInt(1, checkinID);
 			stmt2.setInt(2, userID);
 			stmt2.executeUpdate();
-			
+
 			return true; 
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return false;
 	}
-	
+
 	public static boolean unlike(int checkinID, int userID) {
 
 		Connection conn = DBConnection.getActiveConnection();
@@ -208,23 +212,23 @@ public class Checkin {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, checkinID);
 			stmt.executeUpdate();
-			
+
 			PreparedStatement stmt2; 
 			stmt2 = conn.prepareStatement(sql2); 
 			stmt2.setInt(1, checkinID);
 			stmt2.setInt(2, userID);
 			stmt2.executeUpdate();
-			
+
 			return true; 
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return false;
 	}
-	
+
 
 	public static boolean comment(int checkinID, String comment) {
 
@@ -247,9 +251,9 @@ public class Checkin {
 		return false;
 	}
 
-	
+
 	public static boolean uncomment (int commentID){
-		
+
 		Connection conn = DBConnection.getActiveConnection();
 		String sql = "delete from `comment` where `comment`.`id` = ? ";
 		try{
@@ -257,14 +261,14 @@ public class Checkin {
 			stmt = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, commentID);
 			stmt.executeUpdate();
-		
+
 			return true; 
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return false;
 	}
 
@@ -289,6 +293,79 @@ public class Checkin {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static ArrayList<Checkin> getHomePage (int userID){
+
+		Connection conn = DBConnection.getActiveConnection();
+		ArrayList<Checkin> homePage = getCheckinsByUser(userID); 
+
+		ArrayList<UserModel> follows = UserModel.getFollowedBy(userID); 
+
+		for (int i = 0; i < follows.size(); i++) {
+			int followID = follows.get(i).getId(); 
+			homePage.addAll(getCheckinsByUser(followID));
+
+			String sql = "select checkin.id  ,checkin.review , "
+					+ "checkin.rating ,checkin.likes, checkin.placeID, checkin.userID"
+					+ " from checkin  inner join likers on checkin.id = likers.checkinID"
+					+ " where likers.userID = ?" ; 
+			PreparedStatement stmt; 
+
+			try{
+				stmt = conn.prepareStatement(sql); 
+				stmt.setInt(1, followID);
+				ResultSet rs = stmt.executeQuery();
+                
+				while (rs.next()){
+					Checkin checkin = new Checkin (); 
+					checkin.checkinID = rs.getInt(1); 
+					checkin.review = rs.getString(2); 
+					checkin.rating = rs.getFloat(3); 
+					checkin.likes = rs.getInt(4); 
+					checkin.placeID = rs.getInt(5);
+					checkin.userName = UserModel.getUserById(rs.getInt(6)).getName();
+                    homePage.add(checkin); 
+				}
+
+			} catch (SQLException e) {
+
+				e.printStackTrace();
+			}
+			
+
+			String sql2 = "select checkin.id  ,checkin.review , "
+					+ "checkin.rating ,checkin.likes, checkin.placeID, checkin.userID"
+					+ " from checkin  inner join comment on checkin.id = comment.checkinID"
+					+ " where comment.userID = ?" ; 
+			PreparedStatement stmt2; 
+
+			try{
+				stmt2 = conn.prepareStatement(sql2); 
+				stmt2.setInt(1, followID);
+				ResultSet rs = stmt2.executeQuery();
+                
+				while (rs.next()){
+					Checkin checkin = new Checkin (); 
+					checkin.checkinID = rs.getInt(1); 
+					checkin.review = rs.getString(2); 
+					checkin.rating = rs.getFloat(3); 
+					checkin.likes = rs.getInt(4); 
+					checkin.placeID = rs.getInt(5);
+					checkin.userName = UserModel.getUserById(rs.getInt(6)).getName();
+                    homePage.add(checkin); 
+				}
+
+			} catch (SQLException e) {
+
+				e.printStackTrace();
+			}
+			Set<Checkin> home = new HashSet<Checkin>();
+			home.addAll(homePage);
+			homePage.clear();
+			homePage.addAll(home);
+		}	
+		return homePage; 
 	}
 
 
