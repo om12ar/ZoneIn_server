@@ -316,7 +316,7 @@ public class Checkin {
 				stmt = conn.prepareStatement(sql); 
 				stmt.setInt(1, followID);
 				ResultSet rs = stmt.executeQuery();
-                
+
 				while (rs.next()){
 					Checkin checkin = new Checkin (); 
 					checkin.checkinID = rs.getInt(1); 
@@ -325,14 +325,16 @@ public class Checkin {
 					checkin.likes = rs.getInt(4); 
 					checkin.placeID = rs.getInt(5);
 					checkin.userName = UserModel.getUserById(rs.getInt(6)).getName();
-                    homePage.add(checkin); 
+
+					if (!homePage.contains(checkin))
+						homePage.add(checkin); 
 				}
 
 			} catch (SQLException e) {
 
 				e.printStackTrace();
 			}
-			
+
 
 			String sql2 = "select checkin.id  ,checkin.review , "
 					+ "checkin.rating ,checkin.likes, checkin.placeID, checkin.userID"
@@ -344,7 +346,7 @@ public class Checkin {
 				stmt2 = conn.prepareStatement(sql2); 
 				stmt2.setInt(1, followID);
 				ResultSet rs = stmt2.executeQuery();
-                
+
 				while (rs.next()){
 					Checkin checkin = new Checkin (); 
 					checkin.checkinID = rs.getInt(1); 
@@ -353,18 +355,19 @@ public class Checkin {
 					checkin.likes = rs.getInt(4); 
 					checkin.placeID = rs.getInt(5);
 					checkin.userName = UserModel.getUserById(rs.getInt(6)).getName();
-                    homePage.add(checkin); 
+					if (!homePage.contains(checkin))
+						homePage.add(checkin); 
 				}
+
 
 			} catch (SQLException e) {
 
 				e.printStackTrace();
 			}
-			Set<Checkin> home = new HashSet<Checkin>();
-			home.addAll(homePage);
-			homePage.clear();
-			homePage.addAll(home);
-		}	
+
+		}
+
+
 		return homePage; 
 	}
 

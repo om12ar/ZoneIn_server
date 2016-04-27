@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 public class Context {
 	
-	private SortPlaces sortPlaces;
+	private SortCheckins sortCheckins;
 	
-	   public Context(SortPlaces sortPlaces){
-		      this.sortPlaces = sortPlaces;
+	   public Context(SortCheckins sortCheckins){
+		      this.sortCheckins = sortCheckins;
 		   }
 
-		   public ArrayList<Place> sort(){
-		      return sortPlaces.sort();
+		   public ArrayList<Checkin> sort(ArrayList<Checkin> checkins){
+		      return sortCheckins.sort(checkins);
 		   }
 
 }

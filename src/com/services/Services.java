@@ -617,72 +617,6 @@ public class Services {
 		}
 	}
 
-	@POST 
-	@Path("/sortPlacesByRating")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String sortByRating()
-	{
-		JSONObject jsons=new JSONObject();
-		Context context = new Context(new SortByRating()); 
-		ArrayList<Place> places = context.sort();
-		JSONArray jsArray = new JSONArray();
-		if(places.size()!=0){			
-			JSONObject jObject = new JSONObject();
-			for (Place place : places)
-			{
-				JSONObject placeJson = new JSONObject();
-				placeJson.put("id", place.getID());
-				placeJson.put("name", place.getName());
-				placeJson.put("description", place.getDescription());
-				placeJson.put("lat", place.getLatitude());
-				placeJson.put("long", place.getLongitude());
-				placeJson.put("rating", place.getRating());
-				placeJson.put("checkins", place.getNumberOfCheckins());
-
-				jsArray.add(placeJson);
-			}
-			jObject.put("placeList", jsArray);
-
-			return jObject.toJSONString();
-		}
-		else {
-			jsons.put("placeList",jsArray);
-			return jsons.toJSONString();
-		}
-	}
-	@POST 
-	@Path("/sortPlacesByCheckins")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String sortByCheckins()
-	{
-		JSONObject jsons=new JSONObject();
-		Context context = new Context(new SortByCheckins()); 
-		ArrayList<Place> places = context.sort();
-		JSONArray jsArray = new JSONArray();
-		if(places.size()!=0){			
-			JSONObject jObject = new JSONObject();
-			for (Place place : places)
-			{
-				JSONObject placeJson = new JSONObject();
-				placeJson.put("id", place.getID());
-				placeJson.put("name", place.getName());
-				placeJson.put("description", place.getDescription());
-				placeJson.put("lat", place.getLatitude());
-				placeJson.put("long", place.getLongitude());
-				placeJson.put("rating", place.getRating());
-				placeJson.put("checkins", place.getNumberOfCheckins());
-
-				jsArray.add(placeJson);
-			}
-			jObject.put("placeList", jsArray);
-
-			return jObject.toJSONString();
-		}
-		else {
-			jsons.put("placeList", jsArray);
-			return jsons.toJSONString();
-		}
-	}
 
 	@POST 
 	@Path("/getCheckinsByPlace")
@@ -771,17 +705,88 @@ public class Services {
 
 				jsArray.add(checkinJson);
 			}
-			jObject.put("placeList", jsArray);
+			jObject.put("checkins", jsArray);
 
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("placeList", jsArray);
+			jsons.put("checkins", jsArray);
 			return jsons.toJSONString();
 		}
 	}
-	
-	
+
+
+	@POST 
+	@Path("/sortHomePageByRating")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String sortHomePageByRating(@FormParam("userID") int userID)
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<Checkin> checkins = Checkin.getHomePage(userID);
+		SortByRating sorter = new SortByRating();
+		checkins = sorter.sort(checkins);
+		JSONArray jsArray = new JSONArray();
+		if(checkins.size()!=0){			
+			JSONObject jObject = new JSONObject();
+			for (Checkin checkin : checkins)
+			{
+				JSONObject checkinJson = new JSONObject();
+
+				checkinJson.put("id" , checkin.getCheckinID() );
+				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("review", checkin.getReview() );
+				checkinJson.put("rating", checkin.getRating() );
+				checkinJson.put("likes", checkin.getLikes());
+
+				jsArray.add(checkinJson);
+			}
+			jObject.put("checkins", jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("checkins", jsArray);
+			return jsons.toJSONString();
+		}
+	}
+
+	@POST 
+	@Path("/sortHomePageByCheckins")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String sortHomePageByCheckins(@FormParam("userID") int userID)
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<Checkin> checkins = Checkin.getHomePage(userID);
+		Context context = new Context(new SortByCheckins()); 
+		checkins = context.sort(checkins);
+		JSONArray jsArray = new JSONArray();
+		if(checkins.size()!=0){			
+			JSONObject jObject = new JSONObject();
+			for (Checkin checkin : checkins)
+			{
+				JSONObject checkinJson = new JSONObject();
+
+				checkinJson.put("id" , checkin.getCheckinID() );
+				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("review", checkin.getReview() );
+				checkinJson.put("rating", checkin.getRating() );
+				checkinJson.put("likes", checkin.getLikes());
+
+				jsArray.add(checkinJson);
+			}
+			jObject.put("checkins", jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("checkins", jsArray);
+			return jsons.toJSONString();
+		}
+	}
+
+
+
+
 	@POST 
 	@Path("/getactions")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -790,25 +795,25 @@ public class Services {
 		JSONObject jsonObject=new JSONObject();
 		JSONArray jsonArray = new JSONArray();
 		ArrayList<Action> actions = Action.getActions(userID);
-		
-			for (Action action : actions)
-			{
-				JSONObject temp = new JSONObject();
-				
-				temp.put("actionID", action.getActionID());
-				temp.put("userID", action.getUserID());
-				temp.put("actionType", action.getActionType());
-				temp.put("parameterID", action.getActionParameterID());
 
-				jsonArray.add(temp);
-			}
-			
-			jsonObject.put("actionsList", jsonArray);
+		for (Action action : actions)
+		{
+			JSONObject temp = new JSONObject();
 
-			return jsonObject.toJSONString();
+			temp.put("actionID", action.getActionID());
+			temp.put("userID", action.getUserID());
+			temp.put("actionType", action.getActionType());
+			temp.put("parameterID", action.getActionParameterID());
+
+			jsonArray.add(temp);
 		}
-	
-	
+
+		jsonObject.put("actionsList", jsonArray);
+
+		return jsonObject.toJSONString();
+	}
+
+
 	@POST
 	@Path("/addaction")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -818,8 +823,8 @@ public class Services {
 		jsonObject.put("status", status ? 1 : 0);
 		return jsonObject.toJSONString();
 	}
-	
-	
+
+
 	@POST
 	@Path("/removeaction")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -829,7 +834,7 @@ public class Services {
 		jsonObject.put("status", status ? 1 : 0);
 		return jsonObject.toJSONString();
 	}
-	
-	
+
+
 }
 

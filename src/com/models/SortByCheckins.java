@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class SortByCheckins implements SortPlaces{
+public class SortByCheckins implements SortCheckins{
 
 	@Override
-	public ArrayList<Place> sort() {
-		ArrayList<Place> places = Place.getAllPlaces();
-		Collections.sort(places, new CheckinComparator());
-		return places;
+	public ArrayList<Checkin> sort(ArrayList<Checkin> checkins) {
+		Collections.sort(checkins, new CheckinComparator());
+		return checkins;
 	}
 
 	
-	class CheckinComparator implements Comparator<Place>{
+	class CheckinComparator implements Comparator<Checkin>{
 
 		@Override
-		public int compare(Place place1, Place place2) {
-			return place2.getNumberOfCheckins() - place1.getNumberOfCheckins();
+		public int compare(Checkin checkin1, Checkin checkin2) {
+			return (int)(Place.getPlaceByID(checkin2.getPlaceID()).getNumberOfCheckins() - Place.getPlaceByID(checkin1.getPlaceID()).getNumberOfCheckins());
 		}
 
 	}
+	
 }

@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class SortByRating implements SortPlaces{
+public class SortByRating implements SortCheckins{
 
 
 	@Override
-	public ArrayList<Place> sort() {
+	public ArrayList<Checkin> sort(ArrayList<Checkin> checkins) {
 
-		ArrayList<Place> places = Place.getAllPlaces(); 
-		Collections.sort(places , new RatingComparator());
-		return places;
+		
+		Collections.sort(checkins , new RatingComparator());
+		return checkins;
 	}
 		
 
 
 
-class RatingComparator implements Comparator<Place>{
+class RatingComparator implements Comparator<Checkin>{
 
 			@Override
-			public int compare(Place place1, Place place2) {
-				return (int)(place2.getRating() - place1.getRating());
+			public int compare(Checkin checkin1, Checkin checkin2) {
+				return (int)(Place.getAverageRating(checkin2.getPlaceID()) -Place.getAverageRating(checkin1.getPlaceID()));
 			}
 
 		}
