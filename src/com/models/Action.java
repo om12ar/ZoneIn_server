@@ -91,8 +91,8 @@ public class Action{
 			statement.setInt(1, userID);
 			statement.setString(2, actionType);
 			statement.setInt(3, actionParameterID);
-			statement.executeQuery();
-			
+			//statement.executeQuery();
+			statement.executeUpdate();
 			
 			return true;
 		}
@@ -113,7 +113,7 @@ public class Action{
 			PreparedStatement statement = connection.prepareStatement(sql);
 	
 			statement.setInt(1, actionID);
-			statement.executeQuery();
+			statement.executeUpdate();
 			
 			
 			return true;
