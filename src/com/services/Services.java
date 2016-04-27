@@ -24,10 +24,8 @@ import org.json.simple.JSONObject;
 //import com.models.UserModel;
 import com.models.*;
 
-import com.models.DBConnection;
-import com.models.NotificationModel;
-import com.models.UserModel;
-import com.models.Comment;
+
+import com.models.*;
 
 
 @Path("/")
@@ -749,5 +747,56 @@ public class Services {
 			return jsons.toJSONString();
 		}
 	}
+	
+	
+	@POST 
+	@Path("/getactions")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getActions(@FormParam("userID") int userID)
+	{
+		JSONObject jsonObject=new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		ArrayList<Action> actions = Action.getActions(userID);
+		
+			for (Action action : actions)
+			{
+				JSONObject temp = new JSONObject();
+				
+				temp.put("actionID", action.getActionID());
+				temp.put("userID", action.getUserID());
+				temp.put("actionType", action.getActionType());
+				temp.put("parameterID", action.getActionParameterID());
+
+				jsonArray.add(temp);
+			}
+			
+			jsonObject.put("actionList", jsonArray);
+
+			return jsonObject.toJSONString();
+		}
+	
+	
+	@POST
+	@Path("/addaction")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addAction(@FormParam("userID") int userID, @FormParam("actionType") String actionType, @FormParam("parameterID") int parameterID) {
+		Boolean status = Action.addAction(userID, actionType, parameterID);
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("status", status ? 1 : 0);
+		return jsonObject.toJSONString();
+	}
+	
+	
+	@POST
+	@Path("/removeaction")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String removeAction(@FormParam("actionID") int actionID){
+		Boolean status = Action.removeAction(actionID);
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("status", status ? 1 : 0);
+		return jsonObject.toJSONString();
+	}
+	
+	
 }
 
