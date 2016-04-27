@@ -122,17 +122,8 @@ public class Services {
 		JSONObject jsons=new JSONObject();
 		ArrayList<UserModel> followers = new ArrayList<>(UserModel.getFollowersIDs(id)) ;
 		JSONArray jsArray = new JSONArray();
-		if(followers.size()!=0){
-			/*for(int i=0;i<followedby.length;i++)
-			{
-			UserModel userfollowedby = UserModel.dataFollower(followedby[i]);
-			jsons.put("id["+i+"]", userfollowedby.getId());
-			jsons.put("name["+i+"]", userfollowedby.getName());
-			jsons.put("email["+i+"]", userfollowedby.getEmail());
-			}*/
+		if(followers.size()!=0){		
 			System.out.println("Services.getFollowers()" + followers.toString());
-
-
 			
 			JSONObject jObject = new JSONObject();
 			for (UserModel user : followers)
@@ -244,12 +235,12 @@ public class Services {
 				userJson.put("name",place.getName());
 				userJson.put("description", place.getDescription());
 				userJson.put("rating", place.getRating());
-				userJson.put("Lat",place.getLatitude());
-				userJson.put("Long", place.getLongitude());
+				userJson.put("lat",place.getLatitude());
+				userJson.put("long", place.getLongitude());
 				
 				jsArray.add(userJson);
 			}
-			jObject.put("SavedPlacesAre" , jsArray);
+			jObject.put("SavedPlaces" , jsArray);
 
 			return jObject.toJSONString();
 		}
@@ -705,12 +696,12 @@ public class Services {
 
 				jsArray.add(checkinJson);
 			}
-			jObject.put("placeList", jsArray);
+			jObject.put("checkinList", jsArray);
 
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("placeList", jsArray);
+			jsons.put("checkinList", jsArray);
 			return jsons.toJSONString();
 		}
 	}
