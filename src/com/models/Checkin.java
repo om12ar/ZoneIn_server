@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.mysql.jdbc.Statement;
+
 public class Checkin {
 	
 	protected int checkinID; 
@@ -58,6 +60,51 @@ public class Checkin {
 	public void setLikes(int likes) {
 		this.likes = likes;
 	}
+	
+	public static boolean checkIn(int placeID, int userID, String review, double rating) {
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Insert into checkin (`placeID`,`userID`, `review` , `rating`) VALUES  (?,?,?,?)";
+
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, placeID);
+			stmt.setInt(2, userID);
+			stmt.setString(3, review);
+			stmt.setDouble(4, rating);
+			stmt.executeUpdate();
+
+			Place place = Place.getPlaceByID(placeID);
+			double newLongitude = place.getLongitude();
+			double newLatitude = place.getLatitude();
+			UserModel.updateUserPosition(userID, newLatitude, newLongitude);
+			boolean flag = false;
+			ResultSet rs = stmt.getGeneratedKeys();
+
+			String sql2 = "update `places` set `checkins` = `checkins` + 1 where `id` = ?";
+			PreparedStatement stmt2;
+			stmt2 = conn.prepareStatement(sql2);
+			stmt2.setInt(1, placeID);
+			stmt2.executeUpdate();
+
+			double averageRating = Place.getAverageRating(placeID);
+			String sql3 = "update places set rating = ? where  id = ?";
+			PreparedStatement stmt3;
+			stmt3 = conn.prepareStatement(sql3);
+			stmt3.setDouble(1, averageRating);
+			stmt3.setInt(2, placeID);
+			stmt3.executeUpdate();
+
+			return true; 
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+
 	
 	
 	public static ArrayList<Checkin> getCheckinsByPlace (int placeID){
@@ -123,6 +170,128 @@ public class Checkin {
 		}
 		return null; 
 	}
+	
+	public static boolean like(int checkinID, int userID) {
+
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "update `checkin` set `likes` = `likes` + 1 where `id` = ?";
+		String sql2 = "Insert into `likers` values (?,?)"; 
+		try {
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, checkinID);
+			stmt.executeUpdate();
+			
+			PreparedStatement stmt2; 
+			stmt2 = conn.prepareStatement(sql2); 
+			stmt2.setInt(1, checkinID);
+			stmt2.setInt(2, userID);
+			stmt2.executeUpdate();
+			
+			return true; 
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return false;
+	}
+	
+	public static boolean unlike(int checkinID, int userID) {
+
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "update `checkin` set `likes` = `likes` + 1 where `id` = ?";
+		String sql2 = "delete from `likers` where checkinID = ? and userID = ?"; 
+		try {
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, checkinID);
+			stmt.executeUpdate();
+			
+			PreparedStatement stmt2; 
+			stmt2 = conn.prepareStatement(sql2); 
+			stmt2.setInt(1, checkinID);
+			stmt2.setInt(2, userID);
+			stmt2.executeUpdate();
+			
+			return true; 
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return false;
+	}
+	
+
+	public static boolean comment(int checkinID, String comment) {
+
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "Insert into comment (`checkinID`,`comment`) VALUES  (?,?)";
+		try {
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, checkinID);
+			stmt.setString(2, comment);
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	
+	public static boolean uncomment (int commentID){
+		
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "delete from `comment` where `comment`.`id` = ? ";
+		try{
+			PreparedStatement stmt; 
+			stmt = conn.prepareStatement(sql , Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, commentID);
+			stmt.executeUpdate();
+		
+			return true; 
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return false;
+	}
+
+	public static ArrayList<CheckinComment> getComments(int checkinID) {
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "Select * from comment where `checkinID` = ? ";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, checkinID);
+			ArrayList<CheckinComment> comments = new ArrayList<CheckinComment>();
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				CheckinComment comment = Place.getCommentByID(rs.getInt(1));
+				comments.add(comment);
+				return comments;
+
+			}
+			return null;
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
 
 
 }

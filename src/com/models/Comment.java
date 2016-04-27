@@ -6,12 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class comment implements NotificationModel {
+public class Comment implements NotificationModel {
 	public Integer user = 0;
 	public Integer NotfID=0;
 	public String notificationText;
 
-	public comment(String txt) {
+	public Comment(String txt) {
 		notificationText = txt;
 	}
 
@@ -110,7 +110,7 @@ public class comment implements NotificationModel {
 			//ArrayList<String> notftxt= new ArrayList<>();
 			while (rs.next()) {
 			
-				comment temp = new comment("");
+				Comment temp = new Comment("");
 				temp.NotfID=rs.getInt(1);
 				temp.user=rs.getInt(2);
 				temp.notificationText=rs.getString(3);

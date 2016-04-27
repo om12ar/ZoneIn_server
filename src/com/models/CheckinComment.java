@@ -1,10 +1,11 @@
 package com.models;
 
-public class checkinComment {
+public class CheckinComment {
 	
-	String comment;
 	int ID; 
+	String comment;
 	int checkinID;
+	
 	public String getComment() {
 		return comment;
 	}

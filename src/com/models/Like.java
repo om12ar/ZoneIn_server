@@ -111,7 +111,7 @@ public class Like implements NotificationModel {
 			
 			while (rs.next()) {
 			
-				comment temp = new comment("");
+				Comment temp = new Comment("");
 				temp.NotfID=rs.getInt(1);
 				temp.user=rs.getInt(2);
 				temp.notificationText=rs.getString(3);

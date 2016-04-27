@@ -27,7 +27,7 @@ import com.models.*;
 import com.models.DBConnection;
 import com.models.NotificationModel;
 import com.models.UserModel;
-import com.models.comment;
+import com.models.Comment;
 
 
 @Path("/")
@@ -321,7 +321,7 @@ public class Services {
 				placeJson.put("description", place.getDescription());
 				placeJson.put("lat", place.getLatitude());
 				placeJson.put("long", place.getLongitude());
-
+				placeJson.put("checkins", place.getNumberOfCheckins());
 				jsArray.add(placeJson);
 			}
 			jObject.put("placeList", jsArray);
@@ -339,7 +339,7 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String checkIn(@FormParam("placeID") int placeID,
 			@FormParam("userID") int userID, @FormParam("review") String review, @FormParam("rating") double rating) {
-		Boolean status = Place.checkIn(placeID, userID, review, rating); 
+		Boolean status = Checkin.checkIn(placeID, userID, review, rating); 
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -351,7 +351,7 @@ public class Services {
 	public String getallnotification(@FormParam("ID")Integer ID)
 	{
 		JSONObject jsons=new JSONObject();
-		NotificationModel notification1=new comment("");
+		NotificationModel notification1=new Comment("");
 		NotificationModel notification2=new Like();
 		ArrayList<NotificationModel> userNotification =
 				new ArrayList<>(notification1.getNotificationText(ID)) ;
@@ -402,7 +402,7 @@ public class Services {
 	{
 		//System.out.println("At the server : "+ID);
 		JSONObject jsons=new JSONObject();
-		NotificationModel notification1=new comment("");
+		NotificationModel notification1=new Comment("");
 
 		ArrayList<NotificationModel> userNotification =
 				new ArrayList<>(notification1.getNotificationText(ID)) ;
@@ -414,7 +414,7 @@ public class Services {
 			System.out.println("Service okai");
 			for (int i=0;i<userNotification.size();i++)
 			{
-				comment user=(comment) userNotification.get(i);
+				Comment user=(Comment) userNotification.get(i);
 				JSONObject userJson = new JSONObject();
 				userJson.put("NotificationID: ", user.NotfID);
 				userJson.put("From user ID: ", user.user);
@@ -450,7 +450,7 @@ public class Services {
 			System.out.println("Service okay");
 			for (int i=0;i<userNotification.size();i++)
 			{
-				comment user=(comment) userNotification.get(i);
+				Comment user=(Comment) userNotification.get(i);
 				JSONObject userJson = new JSONObject();
 				userJson.put("NotificationID: ", user.NotfID);
 				userJson.put("From user ID: ", user.user);
@@ -474,7 +474,7 @@ public class Services {
 	public String getnumberofnotification(@FormParam("userID")Integer ID)
 	{
 		JSONObject jsons=new JSONObject();
-		NotificationModel not1=new comment("Hello");
+		NotificationModel not1=new Comment("Hello");
 		int number=not1.getnumberofNotification(ID);
 		//System.out.println(password);
 		if(number!=0){
@@ -495,7 +495,7 @@ public class Services {
 	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post")Integer postID,@FormParam("txt")String commnt)
 	{
 		JSONObject jsons=new JSONObject();
-		NotificationModel notification1=new comment(commnt);
+		NotificationModel notification1=new Comment(commnt);
 
 		int number=notification1.getnumberofNotification(toID);
 		notification1.addUserID(toID);
@@ -532,7 +532,7 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String comment(@FormParam("checkinID") int checkinID,
 			@FormParam("comment") String comment) {
-		Boolean status = Place.comment(checkinID, comment);
+		Boolean status = Checkin.comment(checkinID, comment);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -541,8 +541,29 @@ public class Services {
 	@POST
 	@Path("/like")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String like(@FormParam("checkinID") int checkinID) {
-		Boolean status = Place.like(checkinID);
+	public String like(@FormParam("checkinID") int checkinID , @FormParam("userID") int userID) {
+		Boolean status = Checkin.like(checkinID , userID);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/unlike")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String unlike(@FormParam("checkinID") int checkinID , @FormParam("userID") int userID) {
+		Boolean status = Checkin.unlike(checkinID , userID);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+
+	@POST
+	@Path("/uncomment")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String uncomment(@FormParam("commentID") int commentID) {
+		Boolean status = Checkin.uncomment(commentID);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -583,11 +604,11 @@ public class Services {
 	public String getComments(@FormParam("checkinID") int checkinID)
 	{
 		JSONObject jsons=new JSONObject();
-		ArrayList<checkinComment> comments = new ArrayList<>(Place.getComments(checkinID));
+		ArrayList<CheckinComment> comments = new ArrayList<>(Checkin.getComments(checkinID));
 		JSONArray jsArray = new JSONArray();
 		if(comments.size()!=0){			
 			JSONObject jObject = new JSONObject();
-			for (checkinComment comment : comments)
+			for (CheckinComment comment : comments)
 			{
 				JSONObject commentJson = new JSONObject();
 				commentJson.put("comment", comment.getComment());
