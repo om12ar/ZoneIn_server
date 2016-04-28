@@ -20,11 +20,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 
+
 //import com.models.DBConnection;
 //import com.models.UserModel;
 import com.models.*;
-
-
 import com.models.*;
 
 
@@ -401,6 +400,8 @@ public class Services {
 				userJson.put("notfid", user.getNotfID());
 
 				userJson.put("FromID",user.getUser());
+				
+				userJson.put("postID", user.getPostID());
 
 				userJson.put("txt", user.getNotificationText());
 
@@ -416,6 +417,7 @@ public class Services {
 			return jsons.toJSONString();
 		}
 	}
+	
 	@POST
 	@Path("/sendLike")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -666,6 +668,35 @@ public class Services {
 		return "Hello";
 
 	}
+	
+	@POST 
+	@Path("/getAllCheckinbyuser")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCheckinByUser(@FormParam("userID")int userID)
+	{
+		ArrayList<Checkin> checkin=new ArrayList<Checkin>(Checkin.getCheckinsByUser(userID));
+		
+		JSONArray AllChecksinJsons=new JSONArray();
+		for(Checkin check:checkin)
+		{
+			JSONObject json=new JSONObject();
+			json.put("userID", check.getUserID());
+			json.put("userName", check.getUserName());
+			json.put("id", check.getCheckinID());
+			json.put("placeid", check.getPlaceID());
+			json.put("placeName", check.getPlaceName());
+			json.put("userID", check.getUserID());
+			json.put("likes", check.getLikes());
+			json.put("review", check.getReview());
+			json.put("rating", check.getRating());
+			
+			AllChecksinJsons.add(json);
+		}
+		JSONObject jsonobject=new JSONObject();
+		jsonobject.put("checkin",AllChecksinJsons);
+		return jsonobject.toJSONString();
+	}
+	
 
 
 	@POST 
