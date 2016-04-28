@@ -3,7 +3,6 @@ package com.models;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.sql.Connection;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -54,6 +53,28 @@ public abstract class NotificationModel {
 	
 
 	public abstract void  addNotificationText(Integer fromID,Integer toID,Integer postID);
+	
+	public ArrayList<Integer> toID(int postID){
+		String Sql="Select FromID FROM `notification` WHERE `notification`.postID =  ?";
+		Connection conn=DBConnection.getActiveConnection();
+		ArrayList<Integer> toid=new ArrayList<Integer>();
+		PreparedStatement stmt;
+		try{
+			stmt=conn.prepareStatement(Sql);
+			stmt.setInt(1, postID);
+			ResultSet rs=stmt.executeQuery();
+			while(rs.next())
+			{
+				toid.add(rs.getInt(1));
+			}
+			return toid;
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public static ArrayList<NotificationModel> getNotificationText(Integer UserID){
 		
 		

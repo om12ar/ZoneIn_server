@@ -419,18 +419,20 @@ public class Services {
 	@POST
 	@Path("/sendLike")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post") Integer postID )
+	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("post") Integer postID )
 	{
 
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new Like ();
 
-		int number=notification1.getnumberofNotification(toID);
-		notification1.addUserID(toID);
+		
+		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(postID));
+		for(int i=0;i<toids.size();i++){
+			
+			notification1.addNotificationText(fromID, toids.get(i),postID);
+		}
 
-		notification1.addNotificationText(fromID, toID,postID);
-
-		jsons.put("NumberOfnotification", number);
+		jsons.put("status", 1);
 
 		return jsons.toJSONString();	
 	}
@@ -441,7 +443,6 @@ public class Services {
 	public String getCommentnote(@FormParam("ID")Integer ID)
 	{
 
-		//JSONObject jsons=new JSONObject();
 		JSONObject jObject = new JSONObject();
 
 		ArrayList<NotificationModel> userNotification =
@@ -477,13 +478,13 @@ public class Services {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getLikenote(@FormParam("ID")Integer ID)
 	{
-		//System.out.println("At the server : "+ID);
+		
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new Like();
 
 		ArrayList<NotificationModel> userNotification =
 				new ArrayList<>(notification1.getNotificationText(ID)) ;
-		//System.out.println(userNotification.size());
+		
 		if(userNotification.size() > 0){
 			JSONArray jsArray = new JSONArray();
 			JSONObject jObject = new JSONObject();
@@ -527,17 +528,17 @@ public class Services {
 	@POST
 	@Path("/sendcomment")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post")Integer postID,@FormParam("txt")String commnt)
+	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("post")Integer postID,@FormParam("txt")String commnt)
 	{
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new Comment(commnt);
 
-		int number=notification1.getnumberofNotification(toID);
-		notification1.addUserID(toID);
+		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(postID));
+		for(int i=0;i<toids.size();i++){
+			notification1.addNotificationText(fromID, toids.get(i),postID);
+		}
 
-		notification1.addNotificationText(fromID, toID, postID);
-
-		jsons.put("numberOFNotification", number);
+		jsons.put("status", 1);
 
 		return jsons.toJSONString();	
 	}
