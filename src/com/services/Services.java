@@ -419,18 +419,21 @@ public class Services {
 	@POST
 	@Path("/sendLike")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("toID")Integer toID,@FormParam("post") Integer postID )
+	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("post") Integer postID )
 	{
 
 		JSONObject jsons=new JSONObject();
 		NotificationModel notification1=new Like ();
 
-		int number=notification1.getnumberofNotification(toID);
-		notification1.addUserID(toID);
+		//int number=notification1.getnumberofNotification(toID);
+		//notification1.addUserID(toID);
+		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(postID));
+		for(int i=0;i<toids.size();i++){
+			System.out.println(toids.get(i));
+			notification1.addNotificationText(fromID, toids.get(i),postID);
+		}
 
-		notification1.addNotificationText(fromID, toID,postID);
-
-		jsons.put("NumberOfnotification", number);
+		jsons.put("status", 1);
 
 		return jsons.toJSONString();	
 	}

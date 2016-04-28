@@ -18,8 +18,11 @@ public class DBConnection {
 					+ "user=root&password=&characterEncoding=utf8");
 			*/
 			connection = DriverManager
-					.getConnection("jdbc:mysql://127.6.228.2:3306/zonein?"
-							+ "user=admin2sLmsaB&password=f-ThUdYmsN34&characterEncoding=utf8");
+					.getConnection("jdbc:mysql://localhost:3306/zonein_db?"
+							+ "user=Admin&password=admin&characterEncoding=utf8");
+
+				//	.getConnection("jdbc:mysql://127.6.228.2:3306/zonein?"
+					//		+ "user=admin2sLmsaB&password=f-ThUdYmsN34&characterEncoding=utf8");
 
 
 //			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/zonein?"
