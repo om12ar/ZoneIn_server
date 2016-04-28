@@ -803,6 +803,7 @@ public class Services {
 			temp.put("actionID", action.getActionID());
 			temp.put("userID", action.getUserID());
 			temp.put("actionType", action.getActionType());
+			temp.put("description", action.getDescription());
 			temp.put("parameterID", action.getActionParameterID());
 
 			jsonArray.add(temp);
@@ -817,8 +818,8 @@ public class Services {
 	@POST
 	@Path("/addaction")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String addAction(@FormParam("userID") int userID, @FormParam("actionType") String actionType, @FormParam("parameterID") int parameterID) {
-		Boolean status = Action.addAction(userID, actionType, parameterID);
+	public String addAction(@FormParam("userID") int userID, @FormParam("actionType") String actionType, @FormParam("description") String description, @FormParam("parameterID") int parameterID) {
+		Boolean status = Action.addAction(userID, actionType, description,parameterID);
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("status", status ? 1 : 0);
 		return jsonObject.toJSONString();

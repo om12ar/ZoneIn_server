@@ -12,17 +12,19 @@ public class Action{
 	private int actionID;
 	private int userID;
 	private String actionType;
+	private String description;
 	private int actionParameterID;
 	
 	public Action(){
 		
 	}
 	
-	public Action(int actionID, int userID, String actionType, int actionParameterID){
+	public Action(int actionID, int userID, String actionType, String description,int actionParameterID){
 		
 		this.actionID = actionID;
 		this.userID = userID;
 		this.actionType = actionType;
+		this.description = description;
 		this.actionParameterID = actionParameterID;
 		
 	}
@@ -45,6 +47,13 @@ public class Action{
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
 	}
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description){
+		this.description = description;
+	}
+	
 	public int getActionParameterID() {
 		return actionParameterID;
 	}
@@ -65,7 +74,7 @@ public class Action{
 			
 			while(result.next()){
 				
-				actions.add(new Action(result.getInt(1), result.getInt(2), result.getString(3), result.getInt(4)));
+				actions.add(new Action(result.getInt(1), result.getInt(2), result.getString(3), result.getString(4),result.getInt(5)));
 			}
 			
 		}
@@ -81,7 +90,7 @@ public class Action{
 		
 	}
 	
-	public static boolean addAction(int userID, String actionType, int actionParameterID){
+	public static boolean addAction(int userID, String actionType, String description,int actionParameterID){
 	
 		try{
 			Connection connection = DBConnection.getActiveConnection();
@@ -90,8 +99,8 @@ public class Action{
 	
 			statement.setInt(1, userID);
 			statement.setString(2, actionType);
-			statement.setInt(3, actionParameterID);
-			//statement.executeQuery();
+			statement.setString(3, description);
+			statement.setInt(4, actionParameterID);
 			statement.executeUpdate();
 			
 			return true;
