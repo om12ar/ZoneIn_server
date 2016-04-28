@@ -547,8 +547,8 @@ public class Services {
 	@Path("/comment")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String comment(@FormParam("checkinID") int checkinID,
-			@FormParam("comment") String comment) {
-		Boolean status = Checkin.comment(checkinID, comment);
+			@FormParam("comment") String comment, @FormParam("userID")int userID) {
+		Boolean status = Checkin.comment(checkinID, comment,userID);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -633,6 +633,16 @@ public class Services {
 		double rating = Place.getAverageRating(placeID);
 		JSONObject json = new JSONObject();
 		json.put("rating" , rating);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/getCheckinID")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCheckinID(@FormParam("placeID") int placeID , @FormParam("userID") int userID  ) {
+		int checkinID = Checkin.returnCheckinID(placeID, userID);
+		JSONObject json = new JSONObject();
+		json.put("checkinD" , checkinID);
 		return json.toJSONString();
 	}
 
