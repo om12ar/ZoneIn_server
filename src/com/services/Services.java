@@ -355,6 +355,7 @@ public class Services {
 				placeJson.put("lat", place.getLatitude());
 				placeJson.put("long", place.getLongitude());
 				placeJson.put("checkins", place.getNumberOfCheckins());
+				placeJson.put("rating", place.getRating());
 				jsArray.add(placeJson);
 			}
 			jObject.put("placeList", jsArray);
@@ -713,8 +714,8 @@ public class Services {
 			{
 				JSONObject commentJson = new JSONObject();
 				commentJson.put("comment", comment.getComment());
-				commentJson.put("comment ID", comment.getID());
-				commentJson.put("check in ID", comment.getCheckinID());
+				commentJson.put("commentID", comment.getID());
+				commentJson.put("checkinID", comment.getCheckinID());
 
 
 				jsArray.add(commentJson);
