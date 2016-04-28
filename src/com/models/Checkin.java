@@ -107,6 +107,23 @@ public class Checkin {
 	}
 
 
+	public static boolean removeCheckin (int checkinID){
+		
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "delete from checkin where id = ?";
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql); 
+			stmt.setInt(1, checkinID);
+		    stmt.executeUpdate();
+		    return true;
+		}  catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return false;
+		
+	}
 
 
 	public static ArrayList<Checkin> getCheckinsByPlace (int placeID){
@@ -157,7 +174,8 @@ public class Checkin {
 			ArrayList<Checkin> checkins = new ArrayList<Checkin>();
 
 			while (rs.next()){
-				Checkin checkin = new Checkin (); 
+				Checkin checkin = new Checkin ();
+				checkin.userID = userID; 
 				checkin.checkinID = rs.getInt(1); 
 				checkin.userName = rs.getString(2); 
 				checkin.review = rs.getString(3); 
@@ -324,7 +342,10 @@ public class Checkin {
 					checkin.rating = rs.getFloat(3); 
 					checkin.likes = rs.getInt(4); 
 					checkin.placeID = rs.getInt(5);
-					checkin.userName = UserModel.getUserById(rs.getInt(6)).getName();
+					checkin.userID = rs.getInt(6);
+					System.out.println(checkin.userID);
+					checkin.userName = UserModel.getUserById(checkin.userID).getName();
+
 
 					if (!homePage.contains(checkin))
 						homePage.add(checkin); 
@@ -352,9 +373,11 @@ public class Checkin {
 					checkin.checkinID = rs.getInt(1); 
 					checkin.review = rs.getString(2); 
 					checkin.rating = rs.getFloat(3); 
-					checkin.likes = rs.getInt(4); 
+					checkin.likes = rs.getInt(4);
 					checkin.placeID = rs.getInt(5);
-					checkin.userName = UserModel.getUserById(rs.getInt(6)).getName();
+					checkin.userID = rs.getInt(6);
+					System.out.println(checkin.userID);
+					checkin.userName = UserModel.getUserById(checkin.userID).getName();
 					if (!homePage.contains(checkin))
 						homePage.add(checkin); 
 				}
@@ -371,6 +394,28 @@ public class Checkin {
 		return homePage; 
 	}
 
+	public static ArrayList<UserModel> getLikers (int checkinID){
+
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "select `userID` from `likers` where checkinID = ?";
+		ArrayList<UserModel> likers = new ArrayList<UserModel>();
+		PreparedStatement stmt; 
+		try{
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, checkinID);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()){
+				likers.add(UserModel.getUserById(rs.getInt(1)));
+			}
+
+			return likers;
+
+		}  catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 
 

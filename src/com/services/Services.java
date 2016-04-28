@@ -147,7 +147,7 @@ public class Services {
 	@POST 
 	@Path("/getAllUsers")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getFollowers()
+	public String getUsers()
 	{
 		JSONObject jsons=new JSONObject();
 		ArrayList<UserModel> users = new ArrayList<>(UserModel.getAllUsers()) ;
@@ -178,6 +178,44 @@ public class Services {
 			return jsons.toJSONString();
 		}
 	}
+	
+	
+	@POST 
+	@Path("/getLikers")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getLikers(@FormParam ("checkinID") int checkinID)
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<UserModel> users = new ArrayList<UserModel>();
+		users = Checkin.getLikers(checkinID);
+		JSONArray jsArray = new JSONArray();
+		if(users.size()!=0){
+			System.out.println("Services.getAllUsers()" + users.toString());
+
+
+			JSONObject jObject = new JSONObject();
+			for (UserModel user : users)
+			{
+				JSONObject userJson = new JSONObject();
+				userJson.put("id", user.getId());
+				userJson.put("name", user.getName());
+				userJson.put("pass", user.getPass());
+				userJson.put("email", user.getEmail());
+				userJson.put("lat", user.getLat());
+				userJson.put("long", user.getLon());
+
+				jsArray.add(userJson);
+			}
+			jObject.put("userList", jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("userList", jsArray);
+			return jsons.toJSONString();
+		}
+	}
+
 
 	@POST 
 	@Path("/getFollowedBy")
@@ -546,6 +584,26 @@ public class Services {
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 	}
+	
+	@POST
+	@Path("/removeCheckin")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String removeCheckin(@FormParam("checkinID") int checkinID) {
+		Boolean status = Checkin.removeCheckin(checkinID);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/removePlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String removePlace(@FormParam("placeID") int placeID) {
+		Boolean status = Place.removePlace(placeID);
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
 
 	@POST
 	@Path("/unsavePlace")
@@ -784,6 +842,42 @@ public class Services {
 		}
 	}
 
+	@POST 
+	@Path("/sortHomePageByDistance")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String sortHomePageByDistance(@FormParam("userID") int userID)
+	{
+		JSONObject jsons=new JSONObject();
+		ArrayList<Checkin> checkins = Checkin.getHomePage(userID);
+		Context context = new Context(new SortByDistance()); 
+		checkins = context.sort(checkins);
+		JSONArray jsArray = new JSONArray();
+		if(checkins.size()!=0){			
+			JSONObject jObject = new JSONObject();
+			for (Checkin checkin : checkins)
+			{
+				JSONObject checkinJson = new JSONObject();
+
+				checkinJson.put("id" , checkin.getCheckinID() );
+				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("review", checkin.getReview() );
+				checkinJson.put("rating", checkin.getRating() );
+				checkinJson.put("likes", checkin.getLikes());
+
+				jsArray.add(checkinJson);
+			}
+			jObject.put("checkins", jsArray);
+
+			return jObject.toJSONString();
+		}
+		else {
+			jsons.put("checkins", jsArray);
+			return jsons.toJSONString();
+		}
+	}
+
+
+
 
 
 
@@ -815,10 +909,13 @@ public class Services {
 	}
 
 
-	@POST
+	@POST 
 	@Path("/addaction")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String addAction(@FormParam("userID") int userID, @FormParam("actionType") String actionType, @FormParam("description") String description, @FormParam("parameterID") int parameterID) {
+	public String addAction(@FormParam("userID") int userID, @FormParam("actionType") String actionType,
+			@FormParam("description") String description, @FormParam("parameterID") int parameterID) 
+	{
+		System.out.println(description);
 		Boolean status = Action.addAction(userID, actionType, description,parameterID);
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("status", status ? 1 : 0);

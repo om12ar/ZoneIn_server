@@ -10,13 +10,13 @@ import com.mysql.jdbc.Statement;
 
 public class Place  {
 
-	private int ID;
-	private String name;
-	private double longitude;
-	private double latitude;
-	private String description;
-	private double rating;
-	private int numberOfCheckins;
+	protected int ID;
+	protected String name;
+	protected double longitude;
+	protected double latitude;
+	protected String description;
+	protected double rating;
+	protected int numberOfCheckins;
 
 
 	public Place(int iD, String name, double longitude, double latitude, String description) {
@@ -89,7 +89,7 @@ public class Place  {
 	public void setNumberOfCheckins(int numberOfCheckins) {
 		this.numberOfCheckins = numberOfCheckins;
 	}
-	
+
 	public static Place addPlace(String name, String description, double longitude, double latitude) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -198,8 +198,8 @@ public class Place  {
 
 	}
 
-	
-	
+
+
 
 
 	public static boolean setAverageRating (int userID , int placeID , double newRating){
@@ -255,10 +255,34 @@ public class Place  {
 	}
 
 
+	public double getDistance (UserModel user){
 
+		double userLongitude = user.getLon();
+		double userLatitude = user.getLat();
+		double distance = Math.pow(userLongitude - longitude , 2) +
+				Math.pow(userLatitude - latitude, 2);
 
-	
-	
+		return Math.sqrt(distance);
+	}
+
+	public static boolean removePlace (int placeID){
+		
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "delete from places where id = ?";
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, placeID);
+			stmt.executeUpdate();
+			return true;
+		}catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+
 
 
 }

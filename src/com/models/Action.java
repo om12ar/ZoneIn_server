@@ -94,7 +94,7 @@ public class Action{
 	
 		try{
 			Connection connection = DBConnection.getActiveConnection();
-			String sql = "INSERT INTO `actions`(`UserID`,`ActionType`,`ParameterID`) VALUES(?,?,?)";
+			String sql = "INSERT INTO `actions`(`UserID`,`ActionType`,`Description`, `ParameterID`) VALUES(?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(sql);
 	
 			statement.setInt(1, userID);
