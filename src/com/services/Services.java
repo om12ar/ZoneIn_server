@@ -579,8 +579,8 @@ public class Services {
 	@POST
 	@Path("/uncomment")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String uncomment(@FormParam("commentID") int commentID) {
-		Boolean status = Checkin.uncomment(commentID);
+	public String uncomment(@FormParam("checkinID") int checkinID , @FormParam("userID") int userID) {
+		Boolean status = Checkin.uncomment(checkinID, userID);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -589,8 +589,8 @@ public class Services {
 	@POST
 	@Path("/removeCheckin")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String removeCheckin(@FormParam("checkinID") int checkinID) {
-		Boolean status = Checkin.removeCheckin(checkinID);
+	public String removeCheckin(@FormParam("placeID") int placeID , @FormParam("userID") int userID) {
+		Boolean status = Checkin.removeCheckin(placeID, userID);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -785,6 +785,7 @@ public class Services {
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
+				checkinJson.put("placeName", checkin.getPlaceName());
 
 				jsArray.add(checkinJson);
 			}

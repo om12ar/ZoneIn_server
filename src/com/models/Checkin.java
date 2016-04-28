@@ -128,14 +128,15 @@ public class Checkin {
 		return false;
 	}
 
-	public static boolean removeCheckin(int checkinID) {
+	public static boolean removeCheckin(int placeID , int userID) {
 
 		Connection conn = DBConnection.getActiveConnection();
-		String sql = "delete from checkin where id = ?";
+		String sql = "delete from checkin where placeID = ? and userID = ?";
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, checkinID);
+			stmt.setInt(1, placeID);
+			stmt.setInt(2, userID);
 			stmt.executeUpdate();
 			return true;
 		} catch (SQLException e) {
@@ -288,14 +289,15 @@ public class Checkin {
 		return false;
 	}
 
-	public static boolean uncomment(int commentID) {
+	public static boolean uncomment(int checkinID , int userID) {
 
 		Connection conn = DBConnection.getActiveConnection();
-		String sql = "delete from `comment` where `comment`.`id` = ? ";
+		String sql = "delete from `comment` where checkinID = ? and userID = ? ";
 		try {
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			stmt.setInt(1, commentID);
+			stmt.setInt(1, checkinID);
+			stmt.setInt(2, userID);
 			stmt.executeUpdate();
 
 			return true;
@@ -359,7 +361,7 @@ public class Checkin {
 					checkin.likes = rs.getInt(4);
 					checkin.placeID = rs.getInt(5);
 					checkin.userID = rs.getInt(6);
-					System.out.println(checkin.userID);
+					checkin.placeName = Place.getPlaceByID(checkin.placeID).getName();
 					checkin.userName = UserModel.getUserById(checkin.userID).getName();
 
 					if (!homePage.contains(checkin))
