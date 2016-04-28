@@ -15,6 +15,7 @@ public class Checkin {
 	protected int checkinID;
 	protected int placeID;
 	protected int userID;
+	protected String placeName;
 	protected String userName;
 	protected float rating;
 	protected String review;
@@ -74,6 +75,14 @@ public class Checkin {
 
 	public void setLikes(int likes) {
 		this.likes = likes;
+	}
+
+	public String getPlaceName() {
+		return placeName;
+	}
+
+	public void setPlaceName(String placeName) {
+		this.placeName = placeName;
 	}
 
 	public static boolean checkIn(int placeID, int userID, String review, double rating) {
@@ -143,7 +152,8 @@ public class Checkin {
 		String sql = "select checkin.id , users.name , checkin.review , "
 				+ "checkin.rating ,checkin.likes from users inner join checkin " + " on checkin.userID = users.id "
 				+ " where checkin.placeID = ? ";
-
+          Place.getPlaceByID(placeID);
+          
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(sql);
@@ -157,6 +167,7 @@ public class Checkin {
 				checkin.review = rs.getString(3);
 				checkin.rating = rs.getFloat(4);
 				checkin.likes = rs.getInt(5);
+				checkin.placeName = Place.getPlaceByID(placeID).getName();
 				checkins.add(checkin);
 			}
 			return checkins;
@@ -191,6 +202,7 @@ public class Checkin {
 				checkin.rating = rs.getFloat(4);
 				checkin.likes = rs.getInt(5);
 				checkin.placeID = rs.getInt(6);
+				checkin.placeName = Place.getPlaceByID(checkin.placeID).getName();
 				checkins.add(checkin);
 			}
 			return checkins;
@@ -437,9 +449,31 @@ public class Checkin {
 			e.printStackTrace();
 		}
 		
+		return -1;
+	}
+	
+	public static int getCommentID (int checkinID , int userID){
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "select id from comment where checkinID = ? and userID = ?";
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, checkinID);
+			stmt.setInt(2, userID);
+			ResultSet rs = stmt.executeQuery();
+            int commentID;
+			if (rs.next()){
+				commentID = rs.getInt(1);
+				return commentID;
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 		
 		return -1;
 	}
 
-}
+	}
+
+

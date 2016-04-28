@@ -637,15 +637,27 @@ public class Services {
 	}
 	
 	@POST
+	@Path("/getCommentID")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCommentID(@FormParam("checkinID") int checkinID , @FormParam("userID") int userID  ) {
+		int commentID = Checkin.getCommentID(checkinID, userID);
+		JSONObject json = new JSONObject();
+		json.put("commentID" , commentID);
+		return json.toJSONString();
+	}
+	
+	@POST
 	@Path("/getCheckinID")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getCheckinID(@FormParam("placeID") int placeID , @FormParam("userID") int userID  ) {
 		int checkinID = Checkin.returnCheckinID(placeID, userID);
 		JSONObject json = new JSONObject();
-		json.put("checkinD" , checkinID);
+		json.put("checkinID" , checkinID);
 		return json.toJSONString();
 	}
 
+	
+	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -705,6 +717,7 @@ public class Services {
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
+				checkinJson.put("placeName", checkin.getPlaceName());
 
 				jsArray.add(checkinJson);
 			}
@@ -737,6 +750,7 @@ public class Services {
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
+				checkinJson.put("placeName", checkin.getPlaceName());
 
 				jsArray.add(checkinJson);
 			}
