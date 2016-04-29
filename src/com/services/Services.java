@@ -419,26 +419,7 @@ public class Services {
 		}
 	}
 	
-	@POST
-	@Path("/sendLike")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("post") Integer postID )
-	{
 
-		JSONObject jsons=new JSONObject();
-		NotificationModel notification1=new Like ();
-
-		
-		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(postID));
-		for(int i=0;i<toids.size();i++){
-			
-			notification1.addNotificationText(fromID, toids.get(i),postID);
-		}
-
-		jsons.put("status", 1);
-
-		return jsons.toJSONString();	
-	}
 
 	@POST
 	@Path("/getCommentnotification")
@@ -461,6 +442,8 @@ public class Services {
 				Comment user=(Comment) userNotification.get(i);
 				JSONObject userJson = new JSONObject();
 				userJson.put("notfID", user.NotfID);
+				UserModel users=UserModel.getUserById(user.user);
+				userJson.put("UserName",users.getName());
 				userJson.put("FromID", user.user);
 				userJson.put("txt", user.notificationText);
 				jsArray.add(userJson);
@@ -528,24 +511,6 @@ public class Services {
 
 
 	}
-	@POST
-	@Path("/sendcomment")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("post")Integer postID,@FormParam("txt")String commnt)
-	{
-		JSONObject jsons=new JSONObject();
-		NotificationModel notification1=new Comment(commnt);
-
-		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(postID));
-		for(int i=0;i<toids.size();i++){
-			notification1.addNotificationText(fromID, toids.get(i),postID);
-		}
-
-		jsons.put("status", 1);
-
-		return jsons.toJSONString();	
-	}
-
 
 	@POST
 	@Path("/comment")
@@ -554,7 +519,15 @@ public class Services {
 			@FormParam("comment") String comment, @FormParam("userID")int userID) {
 		Boolean status = Checkin.comment(checkinID, comment,userID);
 		JSONObject json = new JSONObject();
-		json.put("status", status ? 1 : 0);
+		NotificationModel notification1=new Comment(comment);
+
+		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(checkinID));
+		for(int i=0;i<toids.size();i++){
+			notification1.addNotificationText(userID, toids.get(i),checkinID);
+		}
+		UserModel users=UserModel.getUserById(userID);
+		
+		json.put("userName",users.getName());
 		return json.toJSONString();
 	}
 
@@ -565,6 +538,14 @@ public class Services {
 		Boolean status = Checkin.like(checkinID , userID);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
+		NotificationModel notification1=new Like ();
+
+		
+		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(checkinID));
+		for(int i=0;i<toids.size();i++){
+			
+			notification1.addNotificationText(userID, toids.get(i),checkinID);
+		}
 		return json.toJSONString();
 	}
 
