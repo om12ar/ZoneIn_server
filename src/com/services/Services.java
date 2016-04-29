@@ -414,7 +414,7 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("notication", jsArray);
+			jsons.put("notification", jsArray);
 			return jsons.toJSONString();
 		}
 	}
