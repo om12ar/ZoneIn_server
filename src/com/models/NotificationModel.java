@@ -15,9 +15,19 @@ public abstract class NotificationModel {
 	public Integer user = 0;
 	public Integer NotfID=0;
 	public String notificationText="";
+	public Integer postID=0;
 	
 	
 	
+	
+	public Integer getPostID() {
+		return postID;
+	}
+
+	public void setPostID(Integer postID) {
+		this.postID = postID;
+	}
+
 	public Integer getUser() {
 		return user;
 	}
@@ -124,6 +134,7 @@ public abstract class NotificationModel {
 			e.printStackTrace();
 		}
 	}
+
 	
 }
 

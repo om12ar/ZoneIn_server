@@ -20,11 +20,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 
+
 //import com.models.DBConnection;
 //import com.models.UserModel;
 import com.models.*;
-
-
 import com.models.*;
 
 
@@ -356,6 +355,7 @@ public class Services {
 				placeJson.put("lat", place.getLatitude());
 				placeJson.put("long", place.getLongitude());
 				placeJson.put("checkins", place.getNumberOfCheckins());
+				placeJson.put("rating", place.getRating());
 				jsArray.add(placeJson);
 			}
 			jObject.put("placeList", jsArray);
@@ -401,6 +401,8 @@ public class Services {
 				userJson.put("notfid", user.getNotfID());
 
 				userJson.put("FromID",user.getUser());
+				
+				userJson.put("postID", user.getPostID());
 
 				userJson.put("txt", user.getNotificationText());
 
@@ -416,6 +418,7 @@ public class Services {
 			return jsons.toJSONString();
 		}
 	}
+	
 	@POST
 	@Path("/sendLike")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -579,8 +582,8 @@ public class Services {
 	@POST
 	@Path("/uncomment")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String uncomment(@FormParam("commentID") int commentID) {
-		Boolean status = Checkin.uncomment(commentID);
+	public String uncomment(@FormParam("checkinID") int checkinID , @FormParam("userID") int userID) {
+		Boolean status = Checkin.uncomment(checkinID, userID);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -589,8 +592,8 @@ public class Services {
 	@POST
 	@Path("/removeCheckin")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String removeCheckin(@FormParam("checkinID") int checkinID) {
-		Boolean status = Checkin.removeCheckin(checkinID);
+	public String removeCheckin(@FormParam("placeID") int placeID , @FormParam("userID") int userID) {
+		Boolean status = Checkin.removeCheckin(placeID, userID);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
@@ -666,6 +669,35 @@ public class Services {
 		return "Hello";
 
 	}
+	
+	@POST 
+	@Path("/getAllCheckinbyuser")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCheckinByUser(@FormParam("userID")int userID)
+	{
+		ArrayList<Checkin> checkin=new ArrayList<Checkin>(Checkin.getCheckinsByUser(userID));
+		
+		JSONArray AllChecksinJsons=new JSONArray();
+		for(Checkin check:checkin)
+		{
+			JSONObject json=new JSONObject();
+			json.put("userID", check.getUserID());
+			json.put("userName", check.getUserName());
+			json.put("id", check.getCheckinID());
+			json.put("placeid", check.getPlaceID());
+			json.put("placeName", check.getPlaceName());
+			json.put("userID", check.getUserID());
+			json.put("likes", check.getLikes());
+			json.put("review", check.getReview());
+			json.put("rating", check.getRating());
+			
+			AllChecksinJsons.add(json);
+		}
+		JSONObject jsonobject=new JSONObject();
+		jsonobject.put("checkin",AllChecksinJsons);
+		return jsonobject.toJSONString();
+	}
+	
 
 
 	@POST 
@@ -682,8 +714,8 @@ public class Services {
 			{
 				JSONObject commentJson = new JSONObject();
 				commentJson.put("comment", comment.getComment());
-				commentJson.put("comment ID", comment.getID());
-				commentJson.put("check in ID", comment.getCheckinID());
+				commentJson.put("commentID", comment.getID());
+				commentJson.put("checkinID", comment.getCheckinID());
 
 
 				jsArray.add(commentJson);
@@ -779,12 +811,12 @@ public class Services {
 			for (Checkin checkin : checkins)
 			{
 				JSONObject checkinJson = new JSONObject();
-
 				checkinJson.put("id" , checkin.getCheckinID() );
 				checkinJson.put("username", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
+				checkinJson.put("placeName", checkin.getPlaceName());
 				jsArray.add(checkinJson);
 			}
 			jObject.put("checkins", jsArray);
