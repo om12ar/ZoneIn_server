@@ -246,7 +246,7 @@ public class Checkin {
 	public static boolean unlike(int checkinID, int userID) {
 
 		Connection conn = DBConnection.getActiveConnection();
-		String sql = "update `checkin` set `likes` = `likes` + 1 where `id` = ?";
+		String sql = "update `checkin` set `likes` = `likes` - 1 where `id` = ?";
 		String sql2 = "delete from `likers` where checkinID = ? and userID = ?";
 		try {
 			PreparedStatement stmt;

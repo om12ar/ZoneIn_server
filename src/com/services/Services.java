@@ -1016,6 +1016,27 @@ public class Services {
 		return jsonObject.toJSONString();
 	}
 
+	@POST 
+	@Path("/getCheckinsByID")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCheckinsByID(@FormParam("checkinID") int checkinID)
+	{
+		JSONObject jsons=new JSONObject();
+		Checkin checkin = Checkin.getCheckinByID(checkinID);
+		
+		JSONObject checkinJson = new JSONObject();
+
+		checkinJson.put("id" , checkin.getCheckinID() );
+		checkinJson.put("userName", checkin.getUserName() );
+		checkinJson.put("review", checkin.getReview() );
+		checkinJson.put("rating", checkin.getRating() );
+		checkinJson.put("likes", checkin.getLikes());
+		checkinJson.put("placeName", checkin.getPlaceName());
+
+		jsons.put("checkin", checkinJson );
+		return jsons.toJSONString();
+	}
+	
 
 }
 
