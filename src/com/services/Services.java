@@ -785,7 +785,6 @@ public class Services {
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
-
 				jsArray.add(checkinJson);
 			}
 			jObject.put("checkins", jsArray);
