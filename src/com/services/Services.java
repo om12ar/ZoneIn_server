@@ -773,7 +773,7 @@ public class Services {
 				JSONObject checkinJson = new JSONObject();
 
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -806,7 +806,7 @@ public class Services {
 				JSONObject checkinJson = new JSONObject();
 
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -839,7 +839,7 @@ public class Services {
 			{
 				JSONObject checkinJson = new JSONObject();
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -874,7 +874,7 @@ public class Services {
 				JSONObject checkinJson = new JSONObject();
 
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -908,7 +908,7 @@ public class Services {
 				JSONObject checkinJson = new JSONObject();
 
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
