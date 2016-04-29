@@ -698,6 +698,33 @@ public class Services {
 		return jsonobject.toJSONString();
 	}
 	
+	@POST 
+	@Path("/getUserLikedCheckins")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getUserLikedCheckins(@FormParam("userID")int userID)
+	{
+		ArrayList<Checkin> checkins =new ArrayList<Checkin>(Checkin.getUserLikedCheckins(userID));
+		JSONArray AllChecksinJsons=new JSONArray();
+		
+		for(Checkin check:checkins)
+		{
+			JSONObject json=new JSONObject();
+			json.put("userID", check.getUserID());
+			json.put("userName", check.getUserName());
+			json.put("id", check.getCheckinID());
+			json.put("placeid", check.getPlaceID());
+			json.put("placeName", check.getPlaceName());
+			json.put("userID", check.getUserID());
+			json.put("likes", check.getLikes());
+			json.put("review", check.getReview());
+			json.put("rating", check.getRating());
+			
+			AllChecksinJsons.add(json);
+		}
+		JSONObject jsonobject=new JSONObject();
+		jsonobject.put("checkin",AllChecksinJsons);
+		return jsonobject.toJSONString();
+	}
 
 
 	@POST 

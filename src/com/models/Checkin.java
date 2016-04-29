@@ -155,8 +155,8 @@ public class Checkin {
 		String sql = "select checkin.id , users.name , checkin.review , "
 				+ "checkin.rating ,checkin.likes from users inner join checkin " + " on checkin.userID = users.id "
 				+ " where checkin.placeID = ? ";
-          Place.getPlaceByID(placeID);
-          
+		Place.getPlaceByID(placeID);
+
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(sql);
@@ -433,9 +433,9 @@ public class Checkin {
 		return null;
 	}
 
-	
+
 	public static int returnCheckinID(int placeID, int userID) {
-		
+
 		Connection conn = DBConnection.getActiveConnection();
 		String sql = "select id from checkin where placeID = ? and userID = ?";
 		PreparedStatement stmt;
@@ -444,7 +444,7 @@ public class Checkin {
 			stmt.setInt(1, placeID);
 			stmt.setInt(2, userID);
 			ResultSet rs = stmt.executeQuery();
-            int checkinID;
+			int checkinID;
 			if (rs.next()){
 				checkinID = rs.getInt(1);
 				return checkinID;
@@ -452,11 +452,12 @@ public class Checkin {
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return -1;
 	}
-	
+
 	public static int getCommentID (int checkinID , int userID){
+
 		Connection conn = DBConnection.getActiveConnection();
 		String sql = "select id from comment where checkinID = ? and userID = ?";
 		PreparedStatement stmt;
@@ -465,7 +466,7 @@ public class Checkin {
 			stmt.setInt(1, checkinID);
 			stmt.setInt(2, userID);
 			ResultSet rs = stmt.executeQuery();
-            int commentID;
+			int commentID;
 			if (rs.next()){
 				commentID = rs.getInt(1);
 				return commentID;
@@ -473,15 +474,71 @@ public class Checkin {
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return -1;
 	}
-	
 
 	
-	
+	public static Checkin getCheckinByID (int checkinID){
+		
+		Connection conn = DBConnection.getActiveConnection();
+        String sql = "select * from checkin where id = ?";
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, checkinID);
+			ResultSet rs = stmt.executeQuery();
+			
+			if (rs.next()){
+				Checkin checkin = new Checkin();
+				checkin.checkinID = rs.getInt(1);
+				checkin.placeID = rs.getInt(2);
+				checkin.userID = rs.getInt(3);
+				checkin.likes = rs.getInt(4);
+				checkin.review = rs.getString(5);
+				checkin.rating = rs.getFloat(6);
+				checkin.placeName = Place.getPlaceByID(checkin.placeID).getName();
+				checkin.userName = UserModel.getUserById(checkin.userID).getName();
+				return checkin; 
 
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+        		
+		
+		return null; 
 	}
+
+	public static ArrayList<Checkin> getUserLikedCheckins (int userID){
+
+		Connection conn = DBConnection.getActiveConnection();
+		String sql = "select checkinID from likers where userID = ?";
+		PreparedStatement stmt;
+		ArrayList<Checkin> checkins = new ArrayList<>();
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, userID);
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				checkins.add(Checkin.getCheckinByID(rs.getInt(1)));
+			}
+			
+			return checkins;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+
+
+}
 
 
