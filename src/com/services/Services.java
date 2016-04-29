@@ -525,9 +525,7 @@ public class Services {
 		for(int i=0;i<toids.size();i++){
 			notification1.addNotificationText(userID, toids.get(i),checkinID);
 		}
-		UserModel users=UserModel.getUserById(userID);
-		
-		json.put("userName",users.getName());
+	
 		return json.toJSONString();
 	}
 
@@ -724,7 +722,11 @@ public class Services {
 				commentJson.put("comment", comment.getComment());
 				commentJson.put("commentID", comment.getID());
 				commentJson.put("checkinID", comment.getCheckinID());
+				UserModel users=UserModel.getUserById(comment.getID());
+				
+				commentJson.put("userName",users.getName());
 
+				jsArray.add(commentJson);
 
 				jsArray.add(commentJson);
 			}
