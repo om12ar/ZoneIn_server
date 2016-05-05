@@ -22,9 +22,15 @@ public class DBConnection {
 							+ "user=admin2sLmsaB&password=f-ThUdYmsN34&characterEncoding=utf8");
 
 
+
 //			CONNECTION = DRIVERMANAGER.GETCONNECTION("JDBC:MYSQL://LOCALHOST:3306/ZONEIN?"
 //					+ "USER=ROOT&PASSWORD=ROOT&CHARACTERENCODING=UTF8");
 							
+
+		/*	connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/zonein?"
+					+ "user=root&password=root&characterEncoding=utf8");
+							*/
+
 
 			return connection;
 		} catch (ClassNotFoundException e) {

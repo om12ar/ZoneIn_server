@@ -414,31 +414,12 @@ public class Services {
 			return jObject.toJSONString();
 		}
 		else {
-			jsons.put("notication", jsArray);
+			jsons.put("notification", jsArray);
 			return jsons.toJSONString();
 		}
 	}
 	
-	@POST
-	@Path("/sendLike")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String makeLikeNotification(@FormParam("fromID")Integer fromID,@FormParam("post") Integer postID )
-	{
 
-		JSONObject jsons=new JSONObject();
-		NotificationModel notification1=new Like ();
-
-		
-		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(postID));
-		for(int i=0;i<toids.size();i++){
-			
-			notification1.addNotificationText(fromID, toids.get(i),postID);
-		}
-
-		jsons.put("status", 1);
-
-		return jsons.toJSONString();	
-	}
 
 	@POST
 	@Path("/getCommentnotification")
@@ -461,6 +442,8 @@ public class Services {
 				Comment user=(Comment) userNotification.get(i);
 				JSONObject userJson = new JSONObject();
 				userJson.put("notfID", user.NotfID);
+				UserModel users=UserModel.getUserById(user.user);
+				userJson.put("UserName",users.getName());
 				userJson.put("FromID", user.user);
 				userJson.put("txt", user.notificationText);
 				jsArray.add(userJson);
@@ -528,24 +511,6 @@ public class Services {
 
 
 	}
-	@POST
-	@Path("/sendcomment")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String makenote(@FormParam("fromID")Integer fromID,@FormParam("post")Integer postID,@FormParam("txt")String commnt)
-	{
-		JSONObject jsons=new JSONObject();
-		NotificationModel notification1=new Comment(commnt);
-
-		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(postID));
-		for(int i=0;i<toids.size();i++){
-			notification1.addNotificationText(fromID, toids.get(i),postID);
-		}
-
-		jsons.put("status", 1);
-
-		return jsons.toJSONString();	
-	}
-
 
 	@POST
 	@Path("/comment")
@@ -554,7 +519,13 @@ public class Services {
 			@FormParam("comment") String comment, @FormParam("userID")int userID) {
 		Boolean status = Checkin.comment(checkinID, comment,userID);
 		JSONObject json = new JSONObject();
-		json.put("status", status ? 1 : 0);
+		NotificationModel notification1=new Comment(comment);
+
+		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(checkinID));
+		for(int i=0;i<toids.size();i++){
+			notification1.addNotificationText(userID, toids.get(i),checkinID);
+		}
+	
 		return json.toJSONString();
 	}
 
@@ -565,6 +536,14 @@ public class Services {
 		Boolean status = Checkin.like(checkinID , userID);
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
+		NotificationModel notification1=new Like ();
+
+		
+		ArrayList<Integer>toids=new ArrayList<Integer>(notification1.toID(checkinID));
+		for(int i=0;i<toids.size();i++){
+			
+			notification1.addNotificationText(userID, toids.get(i),checkinID);
+		}
 		return json.toJSONString();
 	}
 
@@ -743,7 +722,11 @@ public class Services {
 				commentJson.put("comment", comment.getComment());
 				commentJson.put("commentID", comment.getID());
 				commentJson.put("checkinID", comment.getCheckinID());
+				UserModel users=UserModel.getUserById(comment.getID());
+				
+				commentJson.put("userName",users.getName());
 
+				jsArray.add(commentJson);
 
 				jsArray.add(commentJson);
 			}
@@ -773,7 +756,7 @@ public class Services {
 				JSONObject checkinJson = new JSONObject();
 
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -806,7 +789,7 @@ public class Services {
 				JSONObject checkinJson = new JSONObject();
 
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -839,7 +822,7 @@ public class Services {
 			{
 				JSONObject checkinJson = new JSONObject();
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -874,7 +857,7 @@ public class Services {
 				JSONObject checkinJson = new JSONObject();
 
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -908,7 +891,7 @@ public class Services {
 				JSONObject checkinJson = new JSONObject();
 
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -942,7 +925,7 @@ public class Services {
 				JSONObject checkinJson = new JSONObject();
 
 				checkinJson.put("id" , checkin.getCheckinID() );
-				checkinJson.put("username", checkin.getUserName() );
+				checkinJson.put("userName", checkin.getUserName() );
 				checkinJson.put("review", checkin.getReview() );
 				checkinJson.put("rating", checkin.getRating() );
 				checkinJson.put("likes", checkin.getLikes());
@@ -1016,6 +999,27 @@ public class Services {
 		return jsonObject.toJSONString();
 	}
 
+	@POST 
+	@Path("/getCheckinsByID")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCheckinsByID(@FormParam("checkinID") int checkinID)
+	{
+		JSONObject jsons=new JSONObject();
+		Checkin checkin = Checkin.getCheckinByID(checkinID);
+		
+		JSONObject checkinJson = new JSONObject();
+
+		checkinJson.put("id" , checkin.getCheckinID() );
+		checkinJson.put("userName", checkin.getUserName() );
+		checkinJson.put("review", checkin.getReview() );
+		checkinJson.put("rating", checkin.getRating() );
+		checkinJson.put("likes", checkin.getLikes());
+		checkinJson.put("placeName", checkin.getPlaceName());
+
+		jsons.put("checkin", checkinJson );
+		return jsons.toJSONString();
+	}
+	
 
 }
 

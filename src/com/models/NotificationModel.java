@@ -88,7 +88,7 @@ public abstract class NotificationModel {
 	public static ArrayList<NotificationModel> getNotificationText(Integer UserID){
 		
 		
-			String sql = "SELECT `notfID`,  `FromID`,  `txt` FROM `notification` "
+			String sql = "SELECT `notfID`,  `FromID`,  `txt` , 'postID' FROM `notification` "
 					+ "WHERE `seen`=0 AND `toID`=?";
 			Connection conn = DBConnection.getActiveConnection();
 			PreparedStatement stmt;
@@ -105,6 +105,7 @@ public abstract class NotificationModel {
 					temp.NotfID=rs.getInt(1);
 					temp.user=rs.getInt(2);
 					temp.notificationText=rs.getString(3);
+					temp.postID =rs.getInt(4);
 					notf.add(temp);
 					
 					temp.updateSeenofNotification(temp.NotfID);
