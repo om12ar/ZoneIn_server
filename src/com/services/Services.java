@@ -146,7 +146,7 @@ public class Services {
 	@POST 
 	@Path("/getAllUsers")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getUsers()
+	public  String getUsers()
 	{
 		JSONObject jsons=new JSONObject();
 		ArrayList<UserModel> users = new ArrayList<>(UserModel.getAllUsers()) ;
@@ -339,7 +339,7 @@ public class Services {
 	@POST 
 	@Path("/getAllPlaces")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getPlaces()
+	public  String getPlaces()
 	{
 		JSONObject jsons=new JSONObject();
 		ArrayList<Place> places = Place.getAllPlaces() ;
@@ -665,7 +665,7 @@ public class Services {
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getJson() {
+	public static String getJson() {
 		return "Hello";
 
 	}
