@@ -8,6 +8,9 @@
 <parameter name="http://localhost:8080/ZoneIn_server/rest/sortHomePageByCheckins?userID=5" value="localhost" />
 <parameter name="http://localhost:8080/ZoneIn_server/rest/sortHomePageByDistance?userID=5" value="localhost" />
 <parameter name="http://localhost:8080/ZoneIn_server/rest/getCheckinsByPlace?placeID=1" value="localhost" />
+<parameter name="http://localhost:8080/ZoneIn_server/rest/getCheckinsByUser?userID=1" value="localhost" />
+<parameter name="http://localhost:8080/ZoneIn_server/rest/getCheckinsByUser?userID=1" value="localhost" />
+
   <test name="test1">
     <classes>
        <class name="com.models.ServicesTest"/>

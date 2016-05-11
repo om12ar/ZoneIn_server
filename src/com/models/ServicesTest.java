@@ -115,6 +115,52 @@ public class ServicesTest {
 		Assert.assertTrue(response.contains("FCI"));
 		System.out.println("DEBUG7:" + response);
 	}
+	
+	final String url8 ="http://localhost:8080/ZoneIn_server/rest/getCheckinsByUser?userID=3";
+	@Test
+	@Parameters({ "http://localhost:8080/ZoneIn_server/rest/getCheckinsByUser?userID=3" })
+
+	public void getCheckinsUserTest(String url) throws InterruptedException, IOException{	
+		// Create json
+		String json = "";
+		// Get json to api
+		Services services = new Services ();
+		String response = services.getCheckinsByUser(3);
+		// Compare result
+		Assert.assertTrue(response.contains("Buddha"));
+		System.out.println("DEBUG8:" + response);
+	}
+	
+	final String url9 ="http://localhost:8080/ZoneIn_server/rest/getRating?placeID=5";
+	@Test
+	@Parameters({ "http://localhost:8080/ZoneIn_server/rest/getRating?placeID=5" })
+
+	public void getRating(String url) throws InterruptedException, IOException{	
+		// Create json
+		String json = "";
+		// Get json to api
+		Services services = new Services ();
+		String response = services.getRating(5);
+		// Compare result
+		Assert.assertTrue(response.contains("2.0"));
+		System.out.println("DEBUG9:" + response);
+	}
+	
+	final String url10 ="http://localhost:8080/ZoneIn_server/rest/checkIn?userID=1&placeID=1&review=good&rating=2";
+	@Test
+	@Parameters({ "http://localhost:8080/ZoneIn_server/rest/checkIn?userID=1&placeID=1&review=good&rating=2" })
+
+	public void checkinTest(String url) throws InterruptedException, IOException{	
+		// Create json
+		String json = "";
+		// Get json to api
+		Services services = new Services ();
+		String response = services.checkIn(1, 1, "good", 2);
+		// Compare result
+		Assert.assertTrue(response.contains("1"));
+		System.out.println("DEBUG10:" + response);
+	}
+
 
 
 }
