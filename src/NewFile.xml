@@ -2,9 +2,15 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Suite1">
 <parameter name="http://localhost:8080/ZoneIn_server/rest/getAllPlaces" value="localhost" />
+<parameter name="http://localhost:8080/ZoneIn_server/rest/getAllUsers" value="localhost" />
+<parameter name="http://localhost:8080/ZoneIn_server/rest/getHomePage?userID=5" value="localhost" />
+<parameter name="http://localhost:8080/ZoneIn_server/rest/sortHomePageByRating?userID=5" value="localhost" />
+<parameter name="http://localhost:8080/ZoneIn_server/rest/sortHomePageByCheckins?userID=5" value="localhost" />
+<parameter name="http://localhost:8080/ZoneIn_server/rest/sortHomePageByDistance?userID=5" value="localhost" />
+<parameter name="http://localhost:8080/ZoneIn_server/rest/getCheckinsByPlace?placeID=1" value="localhost" />
   <test name="test1">
     <classes>
-       <class name="com.models.NewTest"/>
+       <class name="com.models.ServicesTest"/>
     </classes>
   </test>
 </suite>

@@ -306,7 +306,6 @@ public class UserModel implements NotificationHandler{
 			while (rs.next()) {
 				UserModel temp =  getUserById(rs.getInt(1)) ;
 				users.add(temp);
-				System.out.println("UserModel.getUserIDs()" + temp.toString());
 				
 			}
 			return users;

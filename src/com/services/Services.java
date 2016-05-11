@@ -152,9 +152,6 @@ public class Services {
 		ArrayList<UserModel> users = new ArrayList<>(UserModel.getAllUsers()) ;
 		JSONArray jsArray = new JSONArray();
 		if(users.size()!=0){
-			System.out.println("Services.getAllUsers()" + users.toString());
-
-
 			JSONObject jObject = new JSONObject();
 			for (UserModel user : users)
 			{
@@ -189,7 +186,6 @@ public class Services {
 		users = Checkin.getLikers(checkinID);
 		JSONArray jsArray = new JSONArray();
 		if(users.size()!=0){
-			System.out.println("Services.getAllUsers()" + users.toString());
 
 
 			JSONObject jObject = new JSONObject();
