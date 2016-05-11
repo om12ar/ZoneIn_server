@@ -19,9 +19,8 @@ public class Place  {
 	protected int numberOfCheckins;
 
 
-	public Place(int iD, String name, double longitude, double latitude, String description) {
+	public Place( String name, double longitude, double latitude, String description) {
 		super();
-		ID = iD;
 		this.name = name;
 		this.longitude = longitude;
 		this.latitude = latitude;
