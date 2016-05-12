@@ -160,7 +160,82 @@ public class ServicesTest {
 		Assert.assertTrue(response.contains("1"));
 		System.out.println("DEBUG10:" + response);
 	}
+	
+	final String url11 ="http://localhost:8080/ZoneIn_server/rest/login?email=m.samir&pass=123456789";
+	@Test
+	@Parameters({ "http://localhost:8080/ZoneIn_server/rest/login?email=m.samir&pass=123456789" })
 
+	public void LoginTest(String url) throws InterruptedException, IOException{	
+		// Create json
+		String json = "";
+		// Get json to api
+		Services services = new Services ();
+		String response = services.login("m.samir", "123456789");//.checkIn(1, 1, "good", 2);
+		// Compare result
+		Assert.assertTrue(response.contains("m.samir"));
+		System.out.println("DEBUG11:" + response);
+	}
+	
+	final String url12 ="http://localhost:8080/ZoneIn_server/rest/updatePosition?id=1&lat=1&long=1";
+	@Test
+	@Parameters({ "http://localhost:8080/ZoneIn_server/rest/updatePosition?id=1&lat=1&long=1" })
+
+	public void updatePositionTest(String url) throws InterruptedException, IOException{	
+		// Create json
+		String json = "";
+		// Get json to api
+		Services services = new Services ();
+		String response = services.updatePosition("1", "1", "1");
+		// Compare result
+		Assert.assertTrue(response.contains("1"));
+		System.out.println("DEBUG12:" + response);
+	}
+	
+	final String url13 ="http://localhost:8080/ZoneIn_server/rest/follow?followerID=1&followedID=2";
+	@Test
+	@Parameters({ "http://localhost:8080/ZoneIn_server/rest/follow?followerID=1&followedID=2" })
+
+	public void followTest(String url) throws InterruptedException, IOException{	
+		// Create json
+		String json = "";
+		// Get json to api
+		Services services = new Services ();
+		String response = services.follow("1","2");
+		// Compare result
+		Assert.assertTrue(response.contains("1"));
+		System.out.println("DEBUG13:" + response);
+	}
+	
+	final String url14 ="http://localhost:8080/ZoneIn_server/rest/getUserPosition?id=1";
+	@Test
+	@Parameters({ "http://localhost:8080/ZoneIn_server/rest/getUserPosition?id=1" })
+
+	public void getUserPositionTest(String url) throws InterruptedException, IOException{	
+		// Create json
+		String json = "";
+		// Get json to api
+		Services services = new Services ();
+		String response = services.getUserPosition("1");
+		// Compare result
+		Assert.assertTrue(response.contains("long"));
+		System.out.println("DEBUG14:" + response);
+	}
+	
+	final String url15 ="http://localhost:8080/ZoneIn_server/rest/getFollowers?id=2";
+	@Test
+	@Parameters({ "http://localhost:8080/ZoneIn_server/rest/getFollowers?id=2" })
+
+	public void getFollowersTest(String url) throws InterruptedException, IOException{	
+		// Create json
+		String json = "";
+		// Get json to api
+		Services services = new Services ();
+		String response = services.getFollowers(2);//.getUserPosition("1");
+		// Compare result
+		Assert.assertTrue(response.contains("name"));
+		System.out.println("DEBUG15:" + response);
+	}
+	
 
 
 }
